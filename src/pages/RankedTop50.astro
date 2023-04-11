@@ -16,23 +16,32 @@ const data = await response.json();
 
 <Layout>
   <Header activeNav="rankedTop50" />
-    <main id="main-content">
-      <section id="hero">
-        <h1>Ranked Top 50 BlatMMR</h1>
-        <br />
-        <ul>
-          {
-            data.players.map((player: PlayerData) => (
-              <li>
-                <h4>
-                  Rank: {player.place} - {player.username}: {player.rating}
-                </h4>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-    </main>
+  <main id="main-content">
+    <section id="hero">
+      <h1>Ranked Top 50 BlatMMR</h1>
+      <br />
+      <ul id="links">
+        {
+          data.players.map((player: PlayerData) => (
+            <>
+              <a id={player.username} href="#">
+                <li>
+                  <h4>
+                    Rank: {player.place} - {player.username}: {player.rating}
+                  </h4>
+                </li>
+              </a>
+              <script define:vars={{ player }}>
+                var myVariable = "/History/"+player.username; var linkElement =
+                document.getElementById(player.username); if (linkElement)
+                {linkElement.setAttribute("href", myVariable)}
+              </script>
+            </>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
   <Footer />
 </Layout>
 
