@@ -3,66 +3,143 @@ import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import { createClient } from "@supabase/supabase-js";
+import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
+import * as postgres from "https://deno.land/x/postgres@v0.14.0/mod.ts";
 
 interface PlayerData {
-  username: string;
-  rating: number;
-  place: number;
+    username: string;
+    rating: number;
+    place: number;
 }
 
 interface Player {
-  username: string;
-  user_id: string;
+    username: string;
+    user_id: string;
 }
 
 interface MatchHistoryItem {
-  user_id: string;
-  game_id: string;
-  game_type: string;
-  game_server: string;
-  gauntlet_ticket_id: number | null;
-  is_scored: boolean;
-  is_winner: boolean;
-  is_draw: boolean;
-  is_player_1: boolean;
-  faction_id: number;
-  general_id: number;
-  faction_xp: number;
-  faction_xp_earned: number;
-  opponent_id: string;
-  opponent_faction_id: number;
-  opponent_general_id: number;
-  opponent_username: string;
-  game_version: string;
-  rewards: string | null;
-  reward_ids: string | null;
-  rank_before: number;
-  rank_stars_before: number;
-  rank_delta: number;
-  rank_stars_delta: number;
-  rank_win_streak: number;
-  is_daily_win: boolean;
-  play_count_reward_progress: number;
-  win_count_reward_progress: number;
-  has_maxed_play_count_rewards: boolean;
-  has_maxed_win_count_rewards: boolean;
-  created_at: number;
-  updated_at: number;
-  ended_at: number;
-  status: string;
-  gold_tip_amount: number | null;
-  rift_ticket_id: null;
-  rift_points: null;
-  rift_points_earned: null;
-  rift_rating_after: null;
-  rift_rating_earned: null;
-  digest: string;
+    user_id: string;
+    game_id: string;
+    game_type: string;
+    game_server: string;
+    gauntlet_ticket_id: number | null;
+    is_scored: boolean;
+    is_winner: boolean;
+    is_draw: boolean;
+    is_player_1: boolean;
+    faction_id: number;
+    general_id: number;
+    faction_xp: number;
+    faction_xp_earned: number;
+    opponent_id: string;
+    opponent_faction_id: number;
+    opponent_general_id: number;
+    opponent_username: string;
+    game_version: string;
+    rewards: string | null;
+    reward_ids: string | null;
+    rank_before: number;
+    rank_stars_before: number;
+    rank_delta: number;
+    rank_stars_delta: number;
+    rank_win_streak: number;
+    is_daily_win: boolean;
+    play_count_reward_progress: number;
+    win_count_reward_progress: number;
+    has_maxed_play_count_rewards: boolean;
+    has_maxed_win_count_rewards: boolean;
+    created_at: number;
+    updated_at: number;
+    ended_at: number;
+    status: string;
+    gold_tip_amount: number | null;
+    rift_ticket_id: null;
+    rift_points: null;
+    rift_points_earned: null;
+    rift_rating_after: null;
+    rift_rating_earned: null;
+    digest: string;
 }
 
-const supabaseUrl = "https://ochsdisftgigdsmjbnra.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jaHNkaXNmdGdpZ2RzbWpibnJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODExNDk3OTgsImV4cCI6MTk5NjcyNTc5OH0.So7oSnFufE68qel9lIVK2iHWGiPCToCO9A2xDLg31KM";
-const supabase = createClient(supabaseUrl, supabaseKey);
+const databaseUrl =
+    "postgres://postgres:[EdenHazard17]@db.ochsdisftgigdsmjbnra.supabase.co:6543/postgres";
+
+const pool = new postgres.Pool(databaseUrl, 3, true);
+
+const connection = await pool.connect();
+
+try {
+    // Create the table
+    await connection.queryObject`
+    CREATE TABLE IF NOT EXISTS todos (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL
+    )
+  `;
+} finally {
+    // Release the connection back into the pool
+    connection.release();
+}
+
+serve(async req => {
+    // Parse the URL and check that the requested endpoint is /todos. If it is
+    // not, return a 404 response.
+    const url = new URL(req.url);
+    if (url.pathname !== "/todos") {
+        return new Response("Not Found", { status: 404 });
+    }
+
+    // Grab a connection from the database pool
+    const connection = await pool.connect();
+
+    try {
+        switch (req.method) {
+            case "GET": {
+                // This is a GET request. Return a list of all todos.
+                // Run the query
+                const result = await connection.queryObject`
+          SELECT * FROM todos
+        `;
+
+                // Encode the result as JSON
+                const body = JSON.stringify(result.rows, null, 2);
+
+                // Return the result as JSON
+                return new Response(body, {
+                    headers: { "content-type": "application/json" },
+                });
+            }
+            case "POST": {
+                // This is a POST request. Create a new todo.
+                // Parse the request body as JSON. If the request body fails to parse,
+                // is not a string, or is longer than 256 chars, return a 400 response.
+                const title = await req.json().catch(() => null);
+                if (typeof title !== "string" || title.length > 256) {
+                    return new Response("Bad Request", { status: 400 });
+                }
+
+                // Insert the new todo into the database
+                await connection.queryObject`
+          INSERT INTO todos (title) VALUES (${title})
+        `;
+
+                // Return a 201 Created response
+                return new Response("", { status: 201 });
+            }
+            default: // If this is neither a POST, or a GET return a 405 response.
+                return new Response("Method Not Allowed", { status: 405 });
+        }
+    } catch (err) {
+        console.error(err);
+        // If an error occurs, return a 500 response
+        return new Response(`Internal Server Error\n\n${err.message}`, {
+            status: 500,
+        });
+    } finally {
+        // Release the connection back into the pool
+        connection.release();
+    }
+});
 
 const { username } = Astro.params;
 
@@ -71,107 +148,106 @@ const { username } = Astro.params;
 const user = "-NJW19A1jvOyXiVn-Wy7";
 const url = `https://api.duelyst2.com/api/users/${user}/games?len=50&blatmmr=true`;
 const token =
-  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MTEyODg1MCwiZXhwIjoxNjgyMzM4NDUwfQ.8BcQiBW6cC23V7Elgjd7riDG2-6T--lOg0ymU3SV0-E";
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MTEyODg1MCwiZXhwIjoxNjgyMzM4NDUwfQ.8BcQiBW6cC23V7Elgjd7riDG2-6T--lOg0ymU3SV0-E";
 
 const fetchHistory = (url: string) =>
-  fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
+    fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
     })
-    .then(data => {
-      return data;
-    })
-    .catch(error => {
-      console.error("There was a problem with the fetch operation:", error);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            console.error(
+                "There was a problem with the fetch operation:",
+                error
+            );
+        });
 
 const fetchUser = async (username: string) => {
-  let { data: players, error } = await supabase
-    .from("players")
-    .select()
-    .eq("username", username);
-  const history = await fetchHistory(
-    `https://api.duelyst2.com/api/users/${players[0].user_id}/games?len=50&blatmmr=true`
-  );
-  return history;
+    const history = await fetchHistory(
+        `https://api.duelyst2.com/api/users/${url}/games?len=50&blatmmr=true`
+    );
+    return history;
 };
 
 let history: MatchHistoryItem[] = [];
 if (username) {
-  history = await fetchUser(username);
+    history = await fetchUser(username);
 }
 ---
 
 <Layout>
-  <Header activeNav="rankedTop50" />
-  <main id="main-content">
-    <section id="hero">
-      <h1>History {username}</h1>
-      <br />
-      {
-        history.map((game: MatchHistoryItem) => (
-          <h4>
-            {game.is_player_1 && (
-              <h4>
-                {username} - {game.opponent_username}
-              </h4>
-            )}
-            {!game.is_player_1 && (
-              <h4>
-                {game.opponent_username} - {username}
-              </h4>
-            )}
-          </h4>
-        ))
-      }
-    </section>
-  </main>
-  <Footer />
+    <Header activeNav="rankedTop50" />
+    <main id="main-content">
+        <section id="hero">
+            <h1>History {username}</h1>
+            <br />
+            {
+                history.map((game: MatchHistoryItem) => (
+                    <h4>
+                        {game.is_player_1 && (
+                            <h4>
+                                {username} - {game.opponent_username}
+                            </h4>
+                        )}
+                        {!game.is_player_1 && (
+                            <h4>
+                                {game.opponent_username} - {username}
+                            </h4>
+                        )}
+                    </h4>
+                ))
+            }
+        </section>
+    </main>
+    <Footer />
 </Layout>
 
 <style>
-  /* ===== Hero Section ===== */
-  #hero {
-    @apply pt-8 pb-6;
-  }
-  #hero h1 {
-    @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
-  }
-  #hero .rss-link {
-    @apply mb-6;
-  }
-  #hero .rss-icon {
-    @apply mb-2 h-6 w-6 scale-110 fill-skin-accent sm:mb-3 sm:scale-125;
-  }
-  #hero p {
-    @apply my-2;
-  }
-  .social-wrapper {
-    @apply mt-4 flex flex-col sm:flex-row sm:items-center;
-  }
-  .social-links {
-    @apply mr-2 mb-1 whitespace-nowrap sm:mb-0;
-  }
+    /* ===== Hero Section ===== */
+    #hero {
+        @apply pt-8 pb-6;
+    }
+    #hero h1 {
+        @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
+    }
+    #hero .rss-link {
+        @apply mb-6;
+    }
+    #hero .rss-icon {
+        @apply mb-2 h-6 w-6 scale-110 fill-skin-accent sm:mb-3 sm:scale-125;
+    }
+    #hero p {
+        @apply my-2;
+    }
+    .social-wrapper {
+        @apply mt-4 flex flex-col sm:flex-row sm:items-center;
+    }
+    .social-links {
+        @apply mr-2 mb-1 whitespace-nowrap sm:mb-0;
+    }
 
-  /* ===== Featured & Recent Posts Sections ===== */
-  #featured,
-  #recent-posts {
-    @apply pt-12 pb-6;
-  }
-  #featured h2,
-  #recent-posts h2 {
-    @apply text-2xl font-semibold tracking-wide;
-  }
-  .all-posts-btn-wrapper {
-    @apply my-8 text-center;
-  }
+    /* ===== Featured & Recent Posts Sections ===== */
+    #featured,
+    #recent-posts {
+        @apply pt-12 pb-6;
+    }
+    #featured h2,
+    #recent-posts h2 {
+        @apply text-2xl font-semibold tracking-wide;
+    }
+    .all-posts-btn-wrapper {
+        @apply my-8 text-center;
+    }
 </style>
