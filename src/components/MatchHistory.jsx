@@ -10,14 +10,7 @@ const fuseOptions = {
     threshold: 0.3, // adjust the threshold based on your needs
 };
 
-var faction_ids = [
-    "Lyonar",
-    "Songhai",
-    "Vetruvian",
-    "Abyssian",
-    "Magmar",
-    "Vanar",
-];
+var faction_ids = ["Lyonar", "Songhai", "Vetruvian", "Abyssian", "Magmar", "Vanar"];
 
 function Search({ searchList, player }) {
     // User's input
@@ -38,84 +31,37 @@ function Search({ searchList, player }) {
     return (
         <>
             <label>Filter players:</label>
-            <input
-                type="text"
-                value={query}
-                onChange={handleOnSearch}
-                placeholder="Search posts"
-            />
+            <input type="text" value={query} onChange={handleOnSearch} placeholder="Search posts" />
             {query.length > 1 && (
                 <p>
-                    Found {posts.length}{" "}
-                    {posts.length === 1 ? "result" : "results"} for '{query}'
+                    Found {posts.length} {posts.length === 1 ? "result" : "results"} for '{query}'
                 </p>
             )}
-            <ul>
+            <br />
+            <ul id="list">
                 {posts &&
                     posts.map(match => (
                         <li>
                             {match.is_player_1 && (
                                 <h4>
-                                    <label
-                                        id={
-                                            match.is_winner
-                                                ? "winner"
-                                                : "neutral"
-                                        }
-                                    >
-                                        {player} (
-                                        {faction_ids[match.faction_id - 1]})
+                                    <label id={match.is_winner ? "winner" : "neutral"}>
+                                        {player} ({faction_ids[match.faction_id - 1]})
                                     </label>
                                     -{" "}
-                                    <label
-                                        id={
-                                            !match.is_winner
-                                                ? match.is_draw
-                                                    ? "neutral"
-                                                    : "loser"
-                                                : "neutral"
-                                        }
-                                    >
-                                        {match.opponent_username} (
-                                        {
-                                            faction_ids[
-                                                match.opponent_faction_id - 1
-                                            ]
-                                        }
-                                        )
+                                    <label id={!match.is_winner ? (match.is_draw ? "neutral" : "loser") : "neutral"}>
+                                        {match.opponent_username} ({faction_ids[match.opponent_faction_id - 1]})
                                     </label>
                                 </h4>
                             )}
 
                             {!match.is_player_1 && (
                                 <h4>
-                                    <label
-                                        id={
-                                            !match.is_winner
-                                                ? match.is_draw
-                                                    ? "neutral"
-                                                    : "loser"
-                                                : "neutral"
-                                        }
-                                    >
-                                        {match.opponent_username} (
-                                        {
-                                            faction_ids[
-                                                match.opponent_faction_id - 1
-                                            ]
-                                        }
-                                        )
+                                    <label id={!match.is_winner ? (match.is_draw ? "neutral" : "loser") : "neutral"}>
+                                        {match.opponent_username} ({faction_ids[match.opponent_faction_id - 1]})
                                     </label>
                                     -{" "}
-                                    <label
-                                        id={
-                                            match.is_winner
-                                                ? "winner"
-                                                : "neutral"
-                                        }
-                                    >
-                                        {player} (
-                                        {faction_ids[match.faction_id - 1]})
+                                    <label id={match.is_winner ? "winner" : "neutral"}>
+                                        {player} ({faction_ids[match.faction_id - 1]})
                                     </label>
                                 </h4>
                             )}

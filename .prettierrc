@@ -2,7 +2,7 @@
     "arrowParens": "avoid",
     "semi": true,
     "tabWidth": 4,
-    "printWidth": 80,
+    "printWidth": 160,
     "singleQuote": false,
     "jsxSingleQuote": false,
     "trailingComma": "es5",

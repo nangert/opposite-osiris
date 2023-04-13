@@ -61,14 +61,7 @@ interface MatchHistoryItem {
     digest: string;
 }
 
-var faction_ids = [
-    "Lyonar",
-    "Songhai",
-    "Vanar",
-    "Abyssian",
-    "Magmar",
-    "Vetruvian",
-];
+var faction_ids = ["Lyonar", "Songhai", "Vanar", "Abyssian", "Magmar", "Vetruvian"];
 
 const databaseUrl = import.meta.env.SECRET_DATABASEKEY;
 const matchHistoryStart = import.meta.env.PUBLIC_MATCH_HISTORY_START;
@@ -90,8 +83,7 @@ const fetchplayer = async (username: string) => {
 };
 
 const fetchPlayerHistory = async (user_id: string) => {
-    const url =
-        matchHistoryStart.trim() + user_id.trim() + matchHistoryEnd.trim();
+    const url = matchHistoryStart.trim() + user_id.trim() + matchHistoryEnd.trim();
     return fetch(url, {
         method: "GET",
         headers: {
@@ -109,10 +101,7 @@ const fetchPlayerHistory = async (user_id: string) => {
             return data;
         })
         .catch(error => {
-            console.error(
-                "There was a problem with the fetch operation:",
-                error
-            );
+            console.error("There was a problem with the fetch operation:", error);
         });
 };
 
@@ -123,9 +112,7 @@ if (username) {
 
     const players = await fetchallplayers().then(response => response);
 
-    playerHistory = await fetchPlayerHistory(player[0].user_id).then(
-        response => response
-    );
+    playerHistory = await fetchPlayerHistory(player[0].user_id).then(response => response);
 }
 ---
 
@@ -136,38 +123,7 @@ if (username) {
             <h1>History</h1>
             <br />
 
-            <MatchHistory
-                client:load
-                searchList={playerHistory}
-                player={player[0].username}
-            />
-
-            <!-- <ul id="matchHistory">
-                {
-                    playerHistory.map((match: MatchHistoryItem) => {
-                        return (
-                            <>
-                                <li>
-                                        {match.is_player_1 && 
-                                            <h4>
-                                            <label id={match.is_winner ? "winner" : "neutral"}>{player[0].username} ({faction_ids[match.faction_id-1]})</label>
-                                             - <label id={!match.is_winner ? (match.is_draw ? "neutral" : "loser") : "neutral"}>{match.opponent_username} ({faction_ids[match.opponent_faction_id-1]})</label>
-                                            </h4>
-                                            
-                                        }
-
-                                        {!match.is_player_1 &&
-                                            <h4>
-                                                <label id={!match.is_winner ? (match.is_draw ? "neutral" : "loser") : "neutral"}>{match.opponent_username} ({faction_ids[match.opponent_faction_id-1]})</label>
-                                                 - <label id={match.is_winner ? "winner" : "neutral"}>{player[0].username} ({faction_ids[match.faction_id-1]})</label>
-                                            </h4>
-                                        }
-                                </li>
-                            </>
-                        );
-                    })
-                }
-            </ul> -->
+            <MatchHistory client:load searchList={playerHistory} player={player[0].username} />
         </section>
     </main>
     <Footer />
