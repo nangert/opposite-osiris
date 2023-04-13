@@ -7,7 +7,7 @@ import "../components/MatchHistory.css";
 const fuseOptions = {
     keys: ["opponent_username"], // specify the property you want to filter by, e.g., 'name'
     includeScore: true,
-    threshold: 0.3, // adjust the threshold based on your needs
+    threshold: 0, // adjust the threshold based on your needs
 };
 
 var faction_ids = ["Lyonar", "Songhai", "Vetruvian", "Abyssian", "Magmar", "Vanar"];
