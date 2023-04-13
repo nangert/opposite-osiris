@@ -4,6 +4,7 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
 import * as postgres from "https://deno.land/x/postgres@v0.14.0/mod.ts";
+import MatchHistory from "../../components/MatchHistory";
 
 interface PlayerData {
     username: string;
@@ -60,6 +61,15 @@ interface MatchHistoryItem {
     digest: string;
 }
 
+var faction_ids = [
+    "Lyonar",
+    "Songhai",
+    "Vanar",
+    "Abyssian",
+    "Magmar",
+    "Vetruvian",
+];
+
 const databaseUrl = import.meta.env.SECRET_DATABASEKEY;
 const matchHistoryStart = import.meta.env.PUBLIC_MATCH_HISTORY_START;
 const matchHistoryEnd = import.meta.env.PUBLIC_MATCH_HISTORY_END;
@@ -76,33 +86,46 @@ const fetchallplayers = async () => {
 };
 
 const fetchplayer = async (username: string) => {
-    console.log(username);
-    return await connection.queryObject`SELECT * FROM players WHERE username=${username}`;
+    return await connection.queryObject`SELECT username, user_id FROM players where username = ${username}`;
 };
 
 const fetchPlayerHistory = async (user_id: string) => {
-    return await fetch(matchHistoryStart + user_id + matchHistoryEnd, {
+    const url =
+        matchHistoryStart.trim() + user_id.trim() + matchHistoryEnd.trim();
+    return fetch(url, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-    });
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            console.error(
+                "There was a problem with the fetch operation:",
+                error
+            );
+        });
 };
 
+let player: Player[] = [];
+let playerHistory: MatchHistoryItem[] = [];
 if (username) {
-    const player = (await fetchplayer(username).then(response => response))[0];
+    player = await fetchplayer(username).then(response => response.rows);
+
     const players = await fetchallplayers().then(response => response);
-    //const playerHistory = await fetchPlayerHistory(player.user_id).then((response) => response)
 
-    console.log("Player");
-    console.log(player);
-
-    console.log("Players");
-    console.log(players);
-
-    console.log("player history");
-    //console.log(playerHistory)
+    playerHistory = await fetchPlayerHistory(player[0].user_id).then(
+        response => response
+    );
 }
 ---
 
@@ -112,32 +135,59 @@ if (username) {
         <section id="hero">
             <h1>History</h1>
             <br />
+
+            <MatchHistory
+                client:load
+                searchList={playerHistory}
+                player={player[0].username}
+            />
+
+            <!-- <ul id="matchHistory">
+                {
+                    playerHistory.map((match: MatchHistoryItem) => {
+                        return (
+                            <>
+                                <li>
+                                        {match.is_player_1 && 
+                                            <h4>
+                                            <label id={match.is_winner ? "winner" : "neutral"}>{player[0].username} ({faction_ids[match.faction_id-1]})</label>
+                                             - <label id={!match.is_winner ? (match.is_draw ? "neutral" : "loser") : "neutral"}>{match.opponent_username} ({faction_ids[match.opponent_faction_id-1]})</label>
+                                            </h4>
+                                            
+                                        }
+
+                                        {!match.is_player_1 &&
+                                            <h4>
+                                                <label id={!match.is_winner ? (match.is_draw ? "neutral" : "loser") : "neutral"}>{match.opponent_username} ({faction_ids[match.opponent_faction_id-1]})</label>
+                                                 - <label id={match.is_winner ? "winner" : "neutral"}>{player[0].username} ({faction_ids[match.faction_id-1]})</label>
+                                            </h4>
+                                        }
+                                </li>
+                            </>
+                        );
+                    })
+                }
+            </ul> -->
         </section>
     </main>
     <Footer />
 </Layout>
 
-<!-- {
-    history.map((game: MatchHistoryItem) => (
-        <h4>
-            {game.is_player_1 && (
-                <h4>
-                    {username} - {game.opponent_username}
-                </h4>
-            )}
-            {!game.is_player_1 && (
-                <h4>
-                    {game.opponent_username} - {username}
-                </h4>
-            )}
-        </h4>
-    ))
-} -->
-
 <style>
     /* ===== Hero Section ===== */
+    #winner {
+        color: #36f1d2;
+    }
+
+    #loser {
+        color: #cc0f4b;
+    }
     #hero {
         @apply pt-8 pb-6;
+    }
+
+    #matchHistory {
+        @apply text-center;
     }
     #hero h1 {
         @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
