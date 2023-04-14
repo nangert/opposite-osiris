@@ -7,13 +7,13 @@ const token = import.meta.env.SECRET_DUELYST_TOKEN;
 
 const pool = new postgres.Pool(databaseUrl, 3, true);
 
-const connection = await pool.connect();
-
 export const fetchallplayers = async () => {
+    const connection = await pool.connect();
     return await connection.queryObject`SELECT * FROM players`;
 };
 
 export const fetchplayer = async (username: string) => {
+    const connection = await pool.connect();
     return await connection.queryObject`SELECT username, user_id FROM players where username = ${username}`;
 };
 
