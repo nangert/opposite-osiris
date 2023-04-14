@@ -16,26 +16,3 @@ export const fetchplayer = async (username: string) => {
     const connection = await pool.connect();
     return await connection.queryObject`SELECT username, user_id FROM players where username = ${username}`;
 };
-
-export const fetchPlayerHistory = async (user_id: string) => {
-    const url = matchHistoryStart.trim() + user_id.trim() + matchHistoryEnd.trim();
-    return fetch(url, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then(data => {
-            return data;
-        })
-        .catch(error => {
-            console.error("There was a problem with the fetch operation:", error);
-        });
-};
