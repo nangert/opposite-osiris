@@ -123,7 +123,7 @@ if (username) {
             <h1>History</h1>
             <br />
 
-            <MatchHistory client:load searchList={playerHistory} player={player[0].username} />
+            <MatchHistory client:only searchList={playerHistory} player={player[0].username} />
         </section>
     </main>
     <Footer />
