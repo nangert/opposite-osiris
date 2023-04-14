@@ -5,7 +5,7 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import LinkButton from "@components/LinkButton.astro";
 import * as postgres from "https://deno.land/x/postgres@v0.14.0/mod.ts";
-import { fetchPlayerHistory, fetchallplayers, fetchplayer } from "./postgreSQL";
+import { fetchallplayers, fetchplayer } from "./postgreSQL";
 
 const { username } = Astro.params;
 
@@ -84,7 +84,7 @@ if (username) {
             <span aria-hidden="true">¯\_(ツ)_/¯</span>
             <p>{username}</p>
 
-            <p>{player}</p>
+            <p>{player[0]}</p>
             <LinkButton href="/" className="my-6 underline decoration-dashed underline-offset-8 text-lg">Go back home</LinkButton>
         </div>
     </main>
