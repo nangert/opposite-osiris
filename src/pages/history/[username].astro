@@ -6,6 +6,8 @@ import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
 import * as postgres from "https://deno.land/x/postgres@v0.14.0/mod.ts";
 import MatchHistory from "../../components/MatchHistory";
 
+const { username } = Astro.props;
+
 interface PlayerData {
     username: string;
     rating: number;
@@ -71,8 +73,6 @@ const token = import.meta.env.SECRET_DUELYST_TOKEN;
 const pool = new postgres.Pool(databaseUrl, 3, true);
 
 const connection = await pool.connect();
-
-const { username } = Astro.params;
 
 const fetchallplayers = async () => {
     return await connection.queryObject`SELECT * FROM players`;
