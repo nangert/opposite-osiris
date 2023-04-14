@@ -81,37 +81,35 @@ const token = import.meta.env.SECRET_DUELYST_TOKEN;
 //     return await connection.queryObject`SELECT username, user_id FROM players where username = ${username}`;
 // };
 
-const fetchPlayerHistory = async (user_id: string) => {
-    const url = matchHistoryStart.trim() + user_id.trim() + matchHistoryEnd.trim();
-    return fetch(url, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then(data => {
-            return data;
-        })
-        .catch(error => {
-            console.error("There was a problem with the fetch operation:", error);
-        });
-};
+// const fetchPlayerHistory = async (user_id: string) => {
+//     const url = matchHistoryStart.trim() + user_id.trim() + matchHistoryEnd.trim();
+//     return fetch(url, {
+//         method: "GET",
+//         headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${token}`,
+//         },
+//     })
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error("Network response was not ok");
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             return data;
+//         })
+//         .catch(error => {
+//             console.error("There was a problem with the fetch operation:", error);
+//         });
+// };
 
 let player: Player[] = [];
 let playerHistory: MatchHistoryItem[] = [];
 if (username) {
     //player = await fetchplayer(username).then(response => response.rows);
-
     //const players = await fetchallplayers().then(response => response);
-
-    playerHistory = await fetchPlayerHistory("-NJW19A1jvOyXiVn-Wy7").then(response => response);
+    //playerHistory = await fetchPlayerHistory("-NJW19A1jvOyXiVn-Wy7").then(response => response);
 }
 ---
 
@@ -122,7 +120,7 @@ if (username) {
             <h1>History</h1>
             <br />
 
-            <!-- <MatchHistory client:only searchList={playerHistory} player={"nangert"} /> -->
+            <!-- <MatchHistory client:load searchList={playerHistory} player={"nangert"} /> -->
         </section>
     </main>
     <Footer />
