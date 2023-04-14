@@ -25,12 +25,18 @@ const data = await response.json();
             <ul id="links">
                 {
                     data.players.map((player: PlayerData) => {
-                        const link = "/something/" + player.username;
+                        const link = "/history/" + player.username;
+                        const link2 = "/something/" + player.username;
                         return (
                             <li>
                                 <LinkButton href={link}>
                                     <h4>
                                         Rank: {player.place} - {player.username}: {player.rating}
+                                    </h4>
+                                </LinkButton>
+                                <LinkButton href={link2}>
+                                    <h4>
+                                        Something: {player.place} - {player.username}: {player.rating}
                                     </h4>
                                 </LinkButton>
                             </li>

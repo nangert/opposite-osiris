@@ -1,6 +1,6 @@
 import Fuse from "fuse.js";
 import { useState } from "react";
-import "../components/MatchHistory.css";
+import "./MatchHistory.css";
 
 // Configs fuse.js
 // https://fusejs.io/api/options.html
