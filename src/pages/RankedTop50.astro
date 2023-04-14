@@ -25,17 +25,15 @@ const data = await response.json();
             <ul id="links">
                 {
                     data.players.map((player: PlayerData) => {
-                        const link = "/History/" + player.username;
+                        const link = "/history/" + player.username;
                         return (
-                            <>
-                                <a id={player.place.toString()} href={link}>
-                                    <li>
-                                        <h4>
-                                            Rank: {player.place} - {player.username}: {player.rating}
-                                        </h4>
-                                    </li>
-                                </a>
-                            </>
+                            <li>
+                                <LinkButton href={link}>
+                                    <h4>
+                                        Rank: {player.place} - {player.username}: {player.rating}
+                                    </h4>
+                                </LinkButton>
+                            </li>
                         );
                     })
                 }
