@@ -14,7 +14,7 @@ const { username } = Astro.params;
             <h1>History</h1>
             <br />
 
-            <MatchHistory client:load username={username} />
+            <MatchHistory client:load username="username" />
         </section>
     </main>
     <Footer />
