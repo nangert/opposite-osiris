@@ -25,7 +25,7 @@ const data = await response.json();
             <ul id="links">
                 {
                     data.players.map((player: PlayerData) => {
-                        const link = "/history/" + player.username;
+                        const link = "/something/" + player.username;
                         return (
                             <li>
                                 <LinkButton href={link}>
