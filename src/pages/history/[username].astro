@@ -2,7 +2,6 @@
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
 import * as postgres from "https://deno.land/x/postgres@v0.14.0/mod.ts";
 import MatchHistory from "../../components/MatchHistory";
 
@@ -70,17 +69,17 @@ const matchHistoryStart = import.meta.env.PUBLIC_MATCH_HISTORY_START;
 const matchHistoryEnd = import.meta.env.PUBLIC_MATCH_HISTORY_END;
 const token = import.meta.env.SECRET_DUELYST_TOKEN;
 
-const pool = new postgres.Pool(databaseUrl, 3, true);
+// const pool = new postgres.Pool(databaseUrl, 3, true);
 
-const connection = await pool.connect();
+// const connection = await pool.connect();
 
-const fetchallplayers = async () => {
-    return await connection.queryObject`SELECT * FROM players`;
-};
+// const fetchallplayers = async () => {
+//     return await connection.queryObject`SELECT * FROM players`;
+// };
 
-const fetchplayer = async (username: string) => {
-    return await connection.queryObject`SELECT username, user_id FROM players where username = ${username}`;
-};
+// const fetchplayer = async (username: string) => {
+//     return await connection.queryObject`SELECT username, user_id FROM players where username = ${username}`;
+// };
 
 const fetchPlayerHistory = async (user_id: string) => {
     const url = matchHistoryStart.trim() + user_id.trim() + matchHistoryEnd.trim();
@@ -108,11 +107,11 @@ const fetchPlayerHistory = async (user_id: string) => {
 let player: Player[] = [];
 let playerHistory: MatchHistoryItem[] = [];
 if (username) {
-    player = await fetchplayer(username).then(response => response.rows);
+    //player = await fetchplayer(username).then(response => response.rows);
 
-    const players = await fetchallplayers().then(response => response);
+    //const players = await fetchallplayers().then(response => response);
 
-    playerHistory = await fetchPlayerHistory(player[0].user_id).then(response => response);
+    playerHistory = await fetchPlayerHistory("-NJW19A1jvOyXiVn-Wy7").then(response => response);
 }
 ---
 
@@ -123,7 +122,7 @@ if (username) {
             <h1>History</h1>
             <br />
 
-            <MatchHistory client:only searchList={playerHistory} player={player[0].username} />
+            <MatchHistory client:only searchList={playerHistory} player={"nangert"} />
         </section>
     </main>
     <Footer />
