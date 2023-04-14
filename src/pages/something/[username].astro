@@ -5,8 +5,10 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import LinkButton from "@components/LinkButton.astro";
 import * as postgres from "https://deno.land/x/postgres@v0.14.0/mod.ts";
+import { fetchPlayerHistory, fetchallplayers, fetchplayer } from "./postgreSQL";
 
-const { user } = Astro.params;
+const { username } = Astro.params;
+
 interface PlayerData {
     username: string;
     rating: number;
@@ -64,10 +66,15 @@ interface MatchHistoryItem {
 
 var faction_ids = ["Lyonar", "Songhai", "Vanar", "Abyssian", "Magmar", "Vetruvian"];
 
-const databaseUrl = import.meta.env.SECRET_DATABASEKEY;
-const matchHistoryStart = import.meta.env.PUBLIC_MATCH_HISTORY_START;
-const matchHistoryEnd = import.meta.env.PUBLIC_MATCH_HISTORY_END;
-const token = import.meta.env.SECRET_DUELYST_TOKEN;
+let player: Player[] = [];
+let playerHistory: MatchHistoryItem[] = [];
+if (username) {
+    player = await fetchplayer(username).then(response => response.rows);
+
+    const players = await fetchallplayers().then(response => response);
+
+    playerHistory = await fetchPlayerHistory(player[0].user_id).then(response => response);
+}
 ---
 
 <Layout title={`404 Not Found | ${SITE.title}`}>
@@ -77,7 +84,7 @@ const token = import.meta.env.SECRET_DUELYST_TOKEN;
         <div class="not-found-wrapper">
             <h1 aria-label="404 Not Found">404</h1>
             <span aria-hidden="true">¯\_(ツ)_/¯</span>
-            <p>{user}</p>
+            <p>{username}</p>
             <LinkButton href="/" className="my-6 underline decoration-dashed underline-offset-8 text-lg">Go back home</LinkButton>
         </div>
     </main>
