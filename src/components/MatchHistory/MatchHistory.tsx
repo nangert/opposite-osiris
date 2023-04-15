@@ -55,13 +55,11 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
     //#endregion
 
-    //const pool = new postgres.Pool(databaseUrl, 3, true);
+    //#region Filter
 
     const fuse = new Fuse(matches, fuseOptions);
 
     const posts = fuse.search(query).map(result => result.item);
-
-    //#region Filter
 
     const handleSearch = (event: any) => {
         setQuery(event.target.value);
@@ -147,11 +145,11 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
         }
     };
 
-    useEffect(() => {
-        if (matches.length > 0) {
-            postPlayers();
-        }
-    }, [matches]);
+    // useEffect(() => {
+    //     if (matches.length > 0) {
+    //         postPlayers();
+    //     }
+    // }, [matches]);
 
     useEffect(() => {
         const fetchAndSetPlayer = async () => {
