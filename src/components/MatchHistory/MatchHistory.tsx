@@ -16,10 +16,14 @@ const fuseOptions = {
 };
 
 const databaseUrl = import.meta.env.SECRET_DATABASEKEY;
-const matchHistoryStart = import.meta.env.SECRET_MATCH_HISTORY_START;
-const matchHistoryEnd = import.meta.env.SECRET_MATCH_HISTORY_END;
-const token = import.meta.env.SECRET_DUELYST_TOKEN;
+// const matchHistoryStart = import.meta.env.SECRET_MATCH_HISTORY_START;
+// const matchHistoryEnd = import.meta.env.SECRET_MATCH_HISTORY_END;
+// const token = import.meta.env.SECRET_DUELYST_TOKEN;
 
+const matchHistoryStart = "https://api.duelyst2.com/api/users/";
+const matchHistoryEnd = "/games?len=50&blatmmr=true";
+const token =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MTQwMTczMywiZXhwIjoxNjgyNjExMzMzfQ.B_Cg-nxZUN26qeLJmpASF69DUI7G28B3W_kR0U1-Iec";
 // const pool = new postgres.Pool(databaseUrl, 3, true);
 
 // const connection = await pool.connect();
