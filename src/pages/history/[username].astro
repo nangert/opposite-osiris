@@ -2,7 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import MatchHistory from "../../components/MatchHistory";
+import MatchHistory from "../../components/MatchHistory/MatchHistory";
 
 const { username } = Astro.params;
 ---
@@ -14,7 +14,7 @@ const { username } = Astro.params;
             <h1>History</h1>
             <br />
 
-            <MatchHistory client:load username="username" />
+            <MatchHistory client:load player={username} />
         </section>
     </main>
     <Footer />

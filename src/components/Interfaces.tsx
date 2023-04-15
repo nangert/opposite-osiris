@@ -9,7 +9,7 @@ export interface Player {
     user_id: string;
 }
 
-export interface MatchHistoryItem {
+export interface Match {
     user_id: string;
     game_id: string;
     game_type: string;
