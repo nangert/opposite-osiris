@@ -47,35 +47,7 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     const [youFactions, setYouFactions] = useState([] as number[]);
     const [oppFactions, setOppFactions] = useState([] as number[]);
 
-    useEffect(() => {
-        const fetchItems = async (user_id: string) => {
-            try {
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                setMatches(data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching items:", error);
-                console.log(url);
-                console.log(token);
-                setLoading(false);
-            }
-        };
-
-        const user_id = "-NJW19A1jvOyXiVn-Wy7";
-        const url = matchHistoryStart + user_id + matchHistoryEnd;
-        fetchItems(user_id);
-    }, [token, matchHistoryStart, matchHistoryEnd]);
-
-    if (loading) {
-        return <p>Loading data...</p>;
-    }
+    const [filtered, setFiltered] = useState([] as Match[]);
 
     const fuse = new Fuse(matches, fuseOptions);
 
@@ -86,15 +58,20 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     };
 
     const toggleYouFaction = (faction: number) => {
-        youFactions.includes(faction) ? setYouFactions(youFactions.filter(x => x !== faction)) : youFactions.push(faction);
+        youFactions.includes(faction) ? setYouFactions(youFactions.filter(x => x !== faction)) : setYouFactions([...youFactions, faction]);
     };
 
     const toggleOppFaction = (faction: number) => {
-        oppFactions.includes(faction) ? setOppFactions(oppFactions.filter(x => x !== faction)) : oppFactions.push(faction);
+        oppFactions.includes(faction) ? setOppFactions(oppFactions.filter(x => x !== faction)) : setOppFactions([...oppFactions, faction]);
     };
 
     const filterMatches = (matches: Match[]) => {
-        let filtered = matches;
+        let filtered: Match[] = [];
+        if (query.length >= 3) {
+            filtered = posts;
+        } else {
+            filtered = matches;
+        }
         if (onlyWins) {
             filtered = filtered.filter(x => x.is_winner === true);
         }
@@ -107,9 +84,42 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
         if (oppFactions.length > 0) {
             filtered = filtered.filter(x => oppFactions.includes(x.opponent_faction_id));
         }
-
         return filtered;
     };
+
+    useEffect(() => {
+        let base = matches;
+        setFiltered(filterMatches(base));
+    }, [onlyWins, onlyLosses, youFactions, oppFactions, query]);
+
+    useEffect(() => {
+        const fetchItems = async (user_id: string) => {
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                setMatches(data);
+                setFiltered(data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching items:", error);
+                setLoading(false);
+            }
+        };
+
+        const user_id = "-NJW19A1jvOyXiVn-Wy7";
+        const url = matchHistoryStart + user_id + matchHistoryEnd;
+        fetchItems(user_id);
+    }, [token, matchHistoryStart, matchHistoryEnd]);
+
+    if (loading) {
+        return <p>Loading data...</p>;
+    }
 
     return (
         <div>
@@ -147,15 +157,8 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
             <br />
 
             <ul id="list">
-                {posts &&
-                    query.length >= 3 &&
-                    filterMatches(posts).map((match: Match) => (
-                        <>
-                            <MatchHistoryItem match={match} player={player} />
-                        </>
-                    ))}
-                {!(posts && query.length >= 3) &&
-                    filterMatches(matches).map((match: Match) => (
+                {filtered &&
+                    filtered.map((match: Match) => (
                         <>
                             <MatchHistoryItem match={match} player={player} />
                         </>
