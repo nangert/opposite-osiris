@@ -40,7 +40,7 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     useEffect(() => {
         const fetchItems = async (user_id: string) => {
             try {
-                const response = await fetch(matchHistoryStart + user_id + matchHistoryEnd, {
+                const response = await fetch(url, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -52,10 +52,14 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching items:", error);
+                console.log(url);
+                console.log(token);
                 setLoading(false);
             }
         };
+
         const user_id = "-NJW19A1jvOyXiVn-Wy7";
+        const url = matchHistoryStart + user_id + matchHistoryEnd;
         fetchItems(user_id);
     }, [token, matchHistoryStart, matchHistoryEnd]);
 
