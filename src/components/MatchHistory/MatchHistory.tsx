@@ -24,8 +24,10 @@ const fuseOptions = {
 
 const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=3000&blatmmr=true";
-const token =
+const tokenRanks =
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODE1NzI2MjcsImV4cCI6MTY4Mjc4MjIyN30.RnmSiHrB8-i8JlStm4HjtrbG3OJnKcd-kkBaIDH_cRo";
+const tokenNangert =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MTU3MTcxNywiZXhwIjoxNjgyNzgxMzE3fQ.G9ly6QNn_I7Enjlq-0Q1N8T3tQKoFaqjMC9lOtqM1Kc";
 
 const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     //#region  useState
@@ -42,7 +44,7 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     const [youFactions, setYouFactions] = useState([] as number[]);
     const [oppFactions, setOppFactions] = useState([] as number[]);
 
-    const [gameModes, setGameModes] = useState([] as string[]);
+    const [gameModes, setGameModes] = useState(["ranked", "gauntlet"] as string[]);
 
     const [filtered, setFiltered] = useState([] as Match[]);
 
@@ -113,6 +115,44 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
         //const response = await connection.queryobject`select username, user_id from players where username = ${username}`;
     };
 
+    const postPlayers = async () => {
+        const allPlayersJson = await fetchallplayers();
+        const allPlayers = allPlayersJson.data as Player[];
+
+        const rows = matches.map(
+            match =>
+                ({
+                    username: match.opponent_username,
+                    user_id: match.opponent_id,
+                } as Player)
+        );
+
+        const uniqueData = rows.reduce((uniqueList: Player[], item: Player) => {
+            const isDuplicate = uniqueList.some(uniqueItem => uniqueItem.username === item.username);
+
+            if (!isDuplicate) {
+                uniqueList.push(item);
+            }
+
+            return uniqueList;
+        }, []);
+
+        const newData = uniqueData.filter(item => {
+            return !allPlayers.some(allPlayer => allPlayer.username === item.username);
+        });
+
+        const { error } = await supabase.from("players").insert(newData);
+        if (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        if (matches.length > 0) {
+            postPlayers();
+        }
+    }, [matches]);
+
     useEffect(() => {
         const fetchAndSetPlayer = async () => {
             const playerDB = await fetchplayer(player);
@@ -123,17 +163,17 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
     useEffect(() => {
         setFiltered(filterMatches(matches));
-    }, [onlyWins, onlyLosses, youFactions, oppFactions, gameModes, query]);
+    }, [onlyWins, onlyLosses, youFactions, oppFactions, gameModes, query, loadingHistory === false]);
 
     useEffect(() => {
         const fetchItems = async () => {
-            const url = matchHistoryStart + currPlayer?.user_id + matchHistoryEnd;
+            const url = matchHistoryStart + currPlayer?.user_id.trim() + matchHistoryEnd;
             try {
                 const response = await fetch(url, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${tokenNangert}`,
                     },
                 });
                 const data = await response.json();
@@ -146,12 +186,10 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
             }
         };
 
-        console.log(currPlayer);
         if (currPlayer !== null && currPlayer !== undefined) {
-            console.log("fetch");
             fetchItems();
         }
-    }, [token, matchHistoryStart, matchHistoryEnd, currPlayer]);
+    }, [tokenRanks, matchHistoryStart, matchHistoryEnd, currPlayer]);
 
     if (loadingHistory) {
         return <p>Loading data...</p>;
