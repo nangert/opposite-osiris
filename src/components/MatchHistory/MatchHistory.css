@@ -9,3 +9,7 @@
 #list {
     align-items: center;
 }
+
+#FilterButton {
+    margin-bottom: 1em;
+}

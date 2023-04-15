@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import "./MatchHistory.css";
 import type { Match } from "../Interfaces";
 import MatchHistoryItem from "./MatchHistoryItem";
-import { TextInput, Checkbox, Grid } from "@mantine/core";
+import { TextInput, Checkbox, Grid, Collapse, Button } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 
 interface MatchHistoryProps {
     player: string;
@@ -41,11 +42,15 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     const [query, setQuery] = useState("");
     const [matches, setMatches] = useState([] as Match[]);
 
+    const [filtersOpen, { toggle }] = useDisclosure(false);
+
     const [onlyWins, setOnlyWins] = useState(false);
     const [onlyLosses, setOnlyLosses] = useState(false);
 
     const [youFactions, setYouFactions] = useState([] as number[]);
     const [oppFactions, setOppFactions] = useState([] as number[]);
+
+    const [gameModes, setGameModes] = useState([] as string[]);
 
     const [filtered, setFiltered] = useState([] as Match[]);
 
@@ -55,6 +60,10 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
     const handleSearch = (event: any) => {
         setQuery(event.target.value);
+    };
+
+    const toggleGameMode = (mode: string) => {
+        gameModes.includes(mode) ? setGameModes(gameModes.filter(x => x !== mode)) : setGameModes([...gameModes, mode]);
     };
 
     const toggleYouFaction = (faction: number) => {
@@ -84,13 +93,15 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
         if (oppFactions.length > 0) {
             filtered = filtered.filter(x => oppFactions.includes(x.opponent_faction_id));
         }
+        if (gameModes.length > 0) {
+            filtered = filtered.filter(x => gameModes.includes(x.game_type));
+        }
         return filtered;
     };
 
     useEffect(() => {
-        let base = matches;
-        setFiltered(filterMatches(base));
-    }, [onlyWins, onlyLosses, youFactions, oppFactions, query]);
+        setFiltered(filterMatches(matches));
+    }, [onlyWins, onlyLosses, youFactions, oppFactions, gameModes, query]);
 
     useEffect(() => {
         const fetchItems = async (user_id: string) => {
@@ -123,36 +134,47 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
     return (
         <div>
-            <h3>Filter players:</h3>
-            <Grid>
-                <Grid.Col>
-                    <TextInput label="Player name" description="Player name" onChange={handleSearch} value={query} />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <h2>Your faction:</h2>
-                    <Checkbox label="Lyonar" checked={youFactions.includes(1)} onChange={() => toggleYouFaction(1)} />
-                    <Checkbox label="Songhai" checked={youFactions.includes(2)} onChange={() => toggleYouFaction(2)} />
-                    <Checkbox label="Vetruvian" checked={youFactions.includes(3)} onChange={() => toggleYouFaction(3)} />
-                    <Checkbox label="Abyssian" checked={youFactions.includes(4)} onChange={() => toggleYouFaction(4)} />
-                    <Checkbox label="Magmar" checked={youFactions.includes(5)} onChange={() => toggleYouFaction(5)} />
-                    <Checkbox label="Vanar" checked={youFactions.includes(6)} onChange={() => toggleYouFaction(6)} />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <h2>Opponents faction:</h2>
-                    <Checkbox label="Lyonar" checked={oppFactions.includes(1)} onChange={() => toggleOppFaction(1)} />
-                    <Checkbox label="Songhai" checked={oppFactions.includes(2)} onChange={() => toggleOppFaction(2)} />
-                    <Checkbox label="Vetruvian" checked={oppFactions.includes(3)} onChange={() => toggleOppFaction(3)} />
-                    <Checkbox label="Abyssian" checked={oppFactions.includes(4)} onChange={() => toggleOppFaction(4)} />
-                    <Checkbox label="Magmar" checked={oppFactions.includes(5)} onChange={() => toggleOppFaction(5)} />
-                    <Checkbox label="Vanar" checked={oppFactions.includes(6)} onChange={() => toggleOppFaction(6)} />
-                </Grid.Col>
-                <Grid.Col>
-                    <Checkbox label="Only your wins" onChange={() => setOnlyWins(!onlyWins)} />
-                </Grid.Col>
-                <Grid.Col>
-                    <Checkbox label="Only opponents wins" onChange={() => setOnlyLosses(!onlyLosses)} />
-                </Grid.Col>
-            </Grid>
+            <Button onClick={toggle} id="FilterButton">
+                Show filters
+            </Button>
+            <Collapse in={filtersOpen}>
+                <Grid>
+                    <Grid.Col>
+                        <h2>Opponent:</h2>
+                        <TextInput label="Player name" onChange={handleSearch} value={query} />
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                        <h2>Your faction:</h2>
+                        <Checkbox label="Lyonar" checked={youFactions.includes(1)} onChange={() => toggleYouFaction(1)} />
+                        <Checkbox label="Songhai" checked={youFactions.includes(2)} onChange={() => toggleYouFaction(2)} />
+                        <Checkbox label="Vetruvian" checked={youFactions.includes(3)} onChange={() => toggleYouFaction(3)} />
+                        <Checkbox label="Abyssian" checked={youFactions.includes(4)} onChange={() => toggleYouFaction(4)} />
+                        <Checkbox label="Magmar" checked={youFactions.includes(5)} onChange={() => toggleYouFaction(5)} />
+                        <Checkbox label="Vanar" checked={youFactions.includes(6)} onChange={() => toggleYouFaction(6)} />
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                        <h2>Opponents faction:</h2>
+                        <Checkbox label="Lyonar" checked={oppFactions.includes(1)} onChange={() => toggleOppFaction(1)} />
+                        <Checkbox label="Songhai" checked={oppFactions.includes(2)} onChange={() => toggleOppFaction(2)} />
+                        <Checkbox label="Vetruvian" checked={oppFactions.includes(3)} onChange={() => toggleOppFaction(3)} />
+                        <Checkbox label="Abyssian" checked={oppFactions.includes(4)} onChange={() => toggleOppFaction(4)} />
+                        <Checkbox label="Magmar" checked={oppFactions.includes(5)} onChange={() => toggleOppFaction(5)} />
+                        <Checkbox label="Vanar" checked={oppFactions.includes(6)} onChange={() => toggleOppFaction(6)} />
+                    </Grid.Col>
+                    <Grid.Col>
+                        <h2>Game mode:</h2>
+                        <Checkbox label="Ranked" checked={gameModes.includes("ranked")} onChange={() => toggleGameMode("ranked")} />
+                        <Checkbox label="Gauntlet" checked={gameModes.includes("gauntlet")} onChange={() => toggleGameMode("gauntlet")} />
+                        <Checkbox label="Friendly" checked={gameModes.includes("friendly")} onChange={() => toggleGameMode("friendly")} />
+                    </Grid.Col>
+                    <Grid.Col>
+                        <Checkbox label="Only your wins" onChange={() => setOnlyWins(!onlyWins)} />
+                    </Grid.Col>
+                    <Grid.Col>
+                        <Checkbox label="Only opponents wins" onChange={() => setOnlyLosses(!onlyLosses)} />
+                    </Grid.Col>
+                </Grid>
+            </Collapse>
 
             <br />
 
