@@ -87,14 +87,12 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
                     query.length >= 3 &&
                     posts.map((match: Match) => (
                         <>
-                            <h4>{match.opponent_username}</h4>
                             <MatchHistoryItem match={match} player={player} />
                         </>
                     ))}
                 {!(posts && query.length >= 3) &&
                     matches.map((match: Match) => (
                         <>
-                            <h4>{match.opponent_username}</h4>
                             <MatchHistoryItem match={match} player={player} />
                         </>
                     ))}
