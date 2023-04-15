@@ -16,9 +16,9 @@ const fuseOptions = {
 };
 
 const databaseUrl = import.meta.env.SECRET_DATABASEKEY;
-const matchHistoryStart = import.meta.env.PUBLIC_MATCH_HISTORY_START;
-const matchHistoryEnd = import.meta.env.PUBLIC_MATCH_HISTORY_END;
-const token = import.meta.env.PUBLIC_DUELYST_TOKEN;
+const matchHistoryStart = import.meta.env.SECRET_MATCH_HISTORY_START;
+const matchHistoryEnd = import.meta.env.SECRET_MATCH_HISTORY_END;
+const token = import.meta.env.SECRET_DUELYST_TOKEN;
 
 // const pool = new postgres.Pool(databaseUrl, 3, true);
 
