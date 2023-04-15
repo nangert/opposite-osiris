@@ -1,10 +1,11 @@
 import Fuse from "fuse.js";
 import { useState, useEffect } from "react";
 import "./MatchHistory.css";
-import type { Match } from "../Interfaces";
+import type { Match, Player } from "../Interfaces";
 import MatchHistoryItem from "./MatchHistoryItem";
 import { TextInput, Checkbox, Grid, Collapse, Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 interface MatchHistoryProps {
     player: string;
@@ -16,7 +17,7 @@ const fuseOptions = {
     threshold: 0, // adjust the threshold based on your needs
 };
 
-const databaseUrl = import.meta.env.SECRET_DATABASEKEY;
+//const databaseUrl = import.meta.env.SECRET_DATABASEKEY;
 // const matchHistoryStart = import.meta.env.SECRET_MATCH_HISTORY_START;
 // const matchHistoryEnd = import.meta.env.SECRET_MATCH_HISTORY_END;
 // const token = import.meta.env.SECRET_DUELYST_TOKEN;
@@ -24,23 +25,14 @@ const databaseUrl = import.meta.env.SECRET_DATABASEKEY;
 const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=3000&blatmmr=true";
 const token =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MTQwMTczMywiZXhwIjoxNjgyNjExMzMzfQ.B_Cg-nxZUN26qeLJmpASF69DUI7G28B3W_kR0U1-Iec";
-// const pool = new postgres.Pool(databaseUrl, 3, true);
-
-// const connection = await pool.connect();
-
-// const fetchallplayers = async () => {
-//     return await connection.queryObject`SELECT * FROM players`;
-// };
-
-// // const fetchplayer = async (username: string) => {
-// //     return await connection.queryobject`select username, user_id from players where username = ${username}`;
-// // };
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODE1NzI2MjcsImV4cCI6MTY4Mjc4MjIyN30.RnmSiHrB8-i8JlStm4HjtrbG3OJnKcd-kkBaIDH_cRo";
 
 const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
-    const [loading, setLoading] = useState(true);
+    //#region  useState
+    const [loadingHistory, setLoadingHistory] = useState(true);
     const [query, setQuery] = useState("");
     const [matches, setMatches] = useState([] as Match[]);
+    const [currPlayer, setCurrPlayer] = useState<Player | undefined>(undefined);
 
     const [filtersOpen, { toggle }] = useDisclosure(false);
 
@@ -54,9 +46,20 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
     const [filtered, setFiltered] = useState([] as Match[]);
 
+    const dbUrl = "https://gblhpiwrdmnzhdjidnwi.supabase.co";
+    const anonKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGhwaXdyZG1uemhkamlkbndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODEyNDY5NzIsImV4cCI6MTk5NjgyMjk3Mn0.xCWTsPeKXrVA-yw6KNcJL33Nf4MzbrS6gL0MGQmNG0M";
+    const supabase = createClient(dbUrl, anonKey);
+
+    //#endregion
+
+    //const pool = new postgres.Pool(databaseUrl, 3, true);
+
     const fuse = new Fuse(matches, fuseOptions);
 
     const posts = fuse.search(query).map(result => result.item);
+
+    //#region Filter
 
     const handleSearch = (event: any) => {
         setQuery(event.target.value);
@@ -99,12 +102,32 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
         return filtered;
     };
 
+    //#endregion
+
+    const fetchallplayers = async () => {
+        return await supabase.from("players").select();
+    };
+
+    const fetchplayer = async (username: string) => {
+        return await supabase.from("players").select("username, user_id").eq("username", username);
+        //const response = await connection.queryobject`select username, user_id from players where username = ${username}`;
+    };
+
+    useEffect(() => {
+        const fetchAndSetPlayer = async () => {
+            const playerDB = await fetchplayer(player);
+            setCurrPlayer(playerDB.data[0]);
+        };
+        fetchAndSetPlayer();
+    }, [player]);
+
     useEffect(() => {
         setFiltered(filterMatches(matches));
     }, [onlyWins, onlyLosses, youFactions, oppFactions, gameModes, query]);
 
     useEffect(() => {
-        const fetchItems = async (user_id: string) => {
+        const fetchItems = async () => {
+            const url = matchHistoryStart + currPlayer?.user_id + matchHistoryEnd;
             try {
                 const response = await fetch(url, {
                     method: "GET",
@@ -116,19 +139,21 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
                 const data = await response.json();
                 setMatches(data);
                 setFiltered(data);
-                setLoading(false);
+                setLoadingHistory(false);
             } catch (error) {
                 console.error("Error fetching items:", error);
-                setLoading(false);
+                setLoadingHistory(false);
             }
         };
 
-        const user_id = "-NJW19A1jvOyXiVn-Wy7";
-        const url = matchHistoryStart + user_id + matchHistoryEnd;
-        fetchItems(user_id);
-    }, [token, matchHistoryStart, matchHistoryEnd]);
+        console.log(currPlayer);
+        if (currPlayer !== null && currPlayer !== undefined) {
+            console.log("fetch");
+            fetchItems();
+        }
+    }, [token, matchHistoryStart, matchHistoryEnd, currPlayer]);
 
-    if (loading) {
+    if (loadingHistory) {
         return <p>Loading data...</p>;
     }
 
