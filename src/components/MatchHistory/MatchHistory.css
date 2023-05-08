@@ -1,0 +1,15 @@
+#winner {
+    color: #36f1d2;
+}
+
+#loser {
+    color: #cc0f4b;
+}
+
+#list {
+    align-items: center;
+}
+
+#FilterButton {
+    margin-bottom: 1em;
+}

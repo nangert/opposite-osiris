@@ -21,7 +21,21 @@ module.exports = {
     // Uncomment the following extend
     // if existing Tailwind color palette will be used
 
-    // extend: {
+    extend: {
+      backgroundColor: {
+        'mantine-button-hover': withOpacity('--color-accent'),
+        'mantine-button-hover-dark': withOpacity('--color-accent-dark'),
+      },
+      textColor: {
+        'mantine-button-text': withOpacity('--color-text-button'),
+        'mantine-button-text-dark': withOpacity('--color-text-button-dark'),
+        'mantine-checkbox-label': withOpacity('--color-text-base'),
+        'mantine-checkbox-label-dark': withOpacity('--color-text-base-dark'),
+        'mantine-text-input-label': withOpacity('--color-text-base'),
+        'mantine-text-input-label-dark': withOpacity('--color-text-base-dark'),
+      },
+
+    },
     textColor: {
       skin: {
         base: withOpacity("--color-text-base"),
