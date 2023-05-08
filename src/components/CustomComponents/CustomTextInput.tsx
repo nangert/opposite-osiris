@@ -1,7 +1,8 @@
-import React from "react";
-import { TextInput } from "@mantine/core";
+import { TextInput, TextInputProps } from "@mantine/core";
 
-function CustomTextInput({ className, ...props }) {
+type Props = TextInputProps;
+
+const CustomTextInput = ({ ...props }: Props) => {
     return (
         <TextInput
             {...props}
@@ -10,6 +11,6 @@ function CustomTextInput({ className, ...props }) {
             }}
         />
     );
-}
+};
 
 export default CustomTextInput;

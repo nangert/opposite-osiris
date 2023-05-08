@@ -3,7 +3,10 @@ import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import LinkButton from "@components/LinkButton.astro";
+
+//ChangeImport
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+//import { createClient } from '@supabase/supabase-js'
 
 interface PlayerData {
     username: string;
@@ -36,8 +39,8 @@ const fetchHistoryComparison = async () => {
     }
 };
 
-const entry = fetchHistoryComparison();
-console.log(entry);
+// const entry = fetchHistoryComparison();
+// console.log(entry);
 ---
 
 <Layout>
@@ -45,7 +48,6 @@ console.log(entry);
     <main id="main-content">
         <section id="hero">
             <h1>Ranked Top 50 BlatMMR</h1>
-            <h2>{entry}</h2>
             <br />
             <ul id="links">
                 {

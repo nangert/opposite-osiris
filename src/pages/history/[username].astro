@@ -11,7 +11,7 @@ const { username } = Astro.params;
     <Header activeNav="history" />
     <main id="main-content">
         <section id="hero">
-            <MatchHistory client:load player={username} />
+            <MatchHistory client:load player={username ?? ""} />
         </section>
     </main>
     <Footer />

@@ -1,13 +1,16 @@
 import { Button, Collapse, Grid } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Fuse from "fuse.js";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { useEffect, useState } from "react";
-import CustomCheckbox from "../CustomComponents/CustomCheckbox";
-import CustomTextInput from "../CustomComponents/CustomTextInput";
+import CustomCheckbox from "@components/CustomComponents/CustomCheckbox";
+import CustomTextInput from "@components/CustomComponents/CustomTextInput";
 import type { Match, Player } from "../Interfaces";
 import "./MatchHistory.css";
 import MatchHistoryItem from "./MatchHistoryItem";
+
+//ChangeImport
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+//import { createClient } from '@supabase/supabase-js'
 
 interface MatchHistoryProps {
     player: string;
@@ -21,10 +24,11 @@ const fuseOptions = {
 
 const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=3000&blatmmr=true";
-const tokenRanks =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODE1NzI2MjcsImV4cCI6MTY4Mjc4MjIyN30.RnmSiHrB8-i8JlStm4HjtrbG3OJnKcd-kkBaIDH_cRo";
 const tokenNangert =
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MzE0MjA5MywiZXhwIjoxNjg0MzUxNjkzfQ.E2K51QWkca-4S8qQ_v1-ydtL2HdzdF9AXxOQ2oY70BY";
+const tokenRanks =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODM1Nzk0NTAsImV4cCI6MTY4NDc4OTA1MH0.NrjfwlD8A8pRfF8GtVBx2exPKHj2-Ec-_MS7IocUBok";
+const token = tokenRanks;
 
 const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     //#region  useState
@@ -144,7 +148,9 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     useEffect(() => {
         const fetchAndSetPlayer = async () => {
             const playerDB = await fetchplayer(player);
-            setCurrPlayer(playerDB.data[0]);
+            if (playerDB.data) {
+                setCurrPlayer(playerDB.data[0]);
+            }
         };
         fetchAndSetPlayer();
     }, [player]);
@@ -161,7 +167,7 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${tokenNangert}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 const data = await response.json();

@@ -2,18 +2,32 @@
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import HistorySearch from "@components/HistorySearch/HistorySearch";
 ---
 
 <Layout>
     <Header />
     <main id="main-content">
         <section id="hero">
-            <h1>Duelyst Ranks</h1>
+            <h1>Player match history:</h1>
 
-            <p>
-                Feel free to suggest features, improvements or report bugs to
-                Nangert#1024 on Discord
-            </p>
+            <h4>
+                To see a players matchshistory enter the IGN and search. For this feature to work the player with the IGN has to be on the friendslist of <b
+                    >'Duelystranks'</b
+                >.
+
+                <br /><br />
+                The feature might brake from time to time due to some api stuff as of now and is overall not yet finished, but feel free to use it.
+                <br />If it doesn't work for an IGN that is on the friendslist tell me on Discord and I'll resolve the issue.
+
+                <br /><br />
+            </h4>
+            <HistorySearch client:load />
+
+            <h4>
+                <br /><br />
+                This feature also works by clicking on a player on the <b>'Ranked Top 50'</b> view <b>if</b> the player is on <b>'Duelystranks'</b> friendslist.
+            </h4>
         </section>
     </main>
 

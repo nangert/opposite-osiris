@@ -14,7 +14,24 @@ const supabase = createClient(dbUrl, anonKey);
         });
         const data = await response.json();
 
-        const { timestamp, error } = await supabase.from("RankedTop50Timestamps").insert([{}]);
+        const { data: insertedData, error } = await supabase.from("RankedTop50Timestamps").insert([{}]).select();
+
+        if (insertedData && insertedData.length > 0) {
+            const timestampId = insertedData[0].id;
+            const playersData = data.players.map((player, index) => {
+                return {
+                    timestamp_id: timestampId,
+                    username: player.username,
+                    user_id: player.username,
+                    placement: index + 1,
+                    blatmmr: player.rating,
+                };
+            });
+
+            console.log(playersData);
+
+            const { data: insertedPlayers, error } = await supabase.from("RankedTop50Players").insert(playersData);
+        }
     } catch (error) {
         console.error("Error fetching and saving data:", error);
     }
