@@ -20,7 +20,7 @@ const supabase = createClient(dbUrl, anonKey);
         });
         const data = await response.json();
 
-        const { data: insertedData, error } = await supabase.from("RankedTop50Timestamps").insert([{}]);
+        const { data: insertedData, error } = await supabase.from("RankedTop50Timestamps").insert([{}]).select();
 
         if (insertedData && insertedData.length > 0){
             const timestampId = insertedData[0].id
@@ -28,7 +28,7 @@ const supabase = createClient(dbUrl, anonKey);
                 return {
                     timestamp_id: timestampId, 
                     username: player.username,
-                    user_id: player.user_id,
+                    //user_id: player.user_id,
                     blatmmr: player.rating,
                     ranking: index + 1,
                 };
