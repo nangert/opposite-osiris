@@ -1,0 +1,100 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import LinkButton from "@components/LinkButton.astro";
+
+interface PlayerData {
+    username: string;
+    portrait_id: number | null;
+}
+
+const tokenNangert =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MzE0MjA5MywiZXhwIjoxNjg0MzUxNjkzfQ.E2K51QWkca-4S8qQ_v1-ydtL2HdzdF9AXxOQ2oY70BY";
+const tokenRanks =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODM1Nzk0NTAsImV4cCI6MTY4NDc4OTA1MH0.NrjfwlD8A8pRfF8GtVBx2exPKHj2-Ec-_MS7IocUBok";
+const token = tokenRanks;
+
+const fetchItems = async () => {
+    try {
+        const response = await fetch("https://api.duelyst2.com/api/me/rank/srank_top", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching items:", error);
+    }
+};
+
+const data: PlayerData[] = await fetchItems();
+---
+
+<Layout>
+    <Header activeNav="legacyTop20" />
+    <main id="main-content">
+        <section id="hero">
+            <h1>Ranked Top 20 Legacy Ranks</h1>
+            <br />
+            <ul id="links">
+                {
+                    data.map((player: PlayerData, index: number) => {
+                        const link = "/history/" + player.username;
+                        return (
+                            <li>
+                                <LinkButton href={link}>
+                                    <h4>
+                                        Rank: {index + 1} - {player.username}
+                                    </h4>
+                                </LinkButton>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        </section>
+    </main>
+    <Footer />
+</Layout>
+
+<style>
+    /* ===== Hero Section ===== */
+    #hero {
+        @apply pt-8 pb-6;
+    }
+    #hero h1 {
+        @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
+    }
+    #hero .rss-link {
+        @apply mb-6;
+    }
+    #hero .rss-icon {
+        @apply mb-2 h-6 w-6 scale-110 fill-skin-accent sm:mb-3 sm:scale-125;
+    }
+    #hero p {
+        @apply my-2;
+    }
+    .social-wrapper {
+        @apply mt-4 flex flex-col sm:flex-row sm:items-center;
+    }
+    .social-links {
+        @apply mr-2 mb-1 whitespace-nowrap sm:mb-0;
+    }
+
+    /* ===== Featured & Recent Posts Sections ===== */
+    #featured,
+    #recent-posts {
+        @apply pt-12 pb-6;
+    }
+    #featured h2,
+    #recent-posts h2 {
+        @apply text-2xl font-semibold tracking-wide;
+    }
+    .all-posts-btn-wrapper {
+        @apply my-8 text-center;
+    }
+</style>
