@@ -7,7 +7,7 @@ const HistorySearch = () => {
 
     const handleClick = () => {
         if (playerName.trim()) {
-            location.href = `/history/${playerName.trim()}`;
+            location.href = `/history/${playerName.trim().toLocaleLowerCase()}`;
         }
     };
 
