@@ -20,8 +20,8 @@ const supabase = createClient(dbUrl, anonKey);
         console.log("inserted timestamp");
         console.log(insertedData);
 
-        core.info("inserted timestamp");
-        core.info(insertedData);
+        core.error("inserted timestamp");
+        core.error(insertedData);
 
         if (insertedData && insertedData.length > 0) {
             const timestampId = insertedData[0].id;
@@ -36,15 +36,15 @@ const supabase = createClient(dbUrl, anonKey);
             });
 
             console.log(playersData);
-            core.info(playersData);
+            core.error(playersData);
 
             const { data: insertedPlayers, error } = await supabase.from("RankedTop50Players").insert(playersData);
 
             console.log("inserted players");
             console.log(insertedPlayers);
 
-            core.info("inserted players");
-            core.info(insertedPlayers);
+            core.error("inserted players");
+            core.error(insertedPlayers);
         }
     } catch (error) {
         console.error("Error fetching and saving data:", error);
