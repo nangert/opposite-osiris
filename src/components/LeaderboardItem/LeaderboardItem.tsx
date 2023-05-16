@@ -11,7 +11,7 @@ interface LeaderboardItem {
 const calcRankDiff = (rank: number, oldRank: string) => {
     if (!isNaN(Number(oldRank))) {
         const change = Number(oldRank) - rank;
-        return change > 0 ? "+" + change : change;
+        return change == 0 ? "" : change > 0 ? "+" + change : change;
     }
     return "new";
 };
@@ -19,7 +19,7 @@ const calcRankDiff = (rank: number, oldRank: string) => {
 const calcMmrDiff = (blatmmr: number, oldBlatmmr: string) => {
     if (!isNaN(Number(oldBlatmmr))) {
         const change = blatmmr - Number(oldBlatmmr);
-        return change > 0 ? "+" + change : change;
+        return change == 0 ? "" : change > 0 ? "+" + change : change;
     }
     return "";
 };
