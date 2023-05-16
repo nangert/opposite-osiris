@@ -1,5 +1,5 @@
-const { createClient } = require("@supabase/supabase-js");
-const fetch = require("node-fetch");
+import { createClient } from "@supabase/supabase-js";
+import fetch from "node-fetch";
 
 const dbUrl = process.env.DB_URL;
 const anonKey = process.env.ANON_KEY;
@@ -16,6 +16,9 @@ const supabase = createClient(dbUrl, anonKey);
 
         const { data: insertedData, error } = await supabase.from("RankedTop50Timestamps").insert([{}]).select();
 
+        console.log("inserted timestamp");
+        console.log(insertedData);
+
         if (insertedData && insertedData.length > 0) {
             const timestampId = insertedData[0].id;
             const playersData = data.players.map((player, index) => {
@@ -31,6 +34,9 @@ const supabase = createClient(dbUrl, anonKey);
             console.log(playersData);
 
             const { data: insertedPlayers, error } = await supabase.from("RankedTop50Players").insert(playersData);
+
+            console.log("inserted players");
+            console.log(insertedPlayers);
         }
     } catch (error) {
         console.error("Error fetching and saving data:", error);
