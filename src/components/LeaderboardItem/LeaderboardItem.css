@@ -1,0 +1,86 @@
+#LeaderBoardItem {
+    display: flex;
+    width: 100%;
+}
+
+#RankLabel,
+#RankDiffLabel,
+#UsernameLabel,
+#MMRLabel {
+    display: flex;
+}
+
+#RankDiffLabel,
+#RankDiffLabelGreen,
+#RankDiffLabelRed {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 0.5em;
+}
+
+#RankLabel {
+    width: 5em;
+}
+
+#RankDiffLabelGreen {
+    color: #36f1d2;
+}
+
+#RankDiffLabelRed {
+    color: #cc0f4b;
+}
+
+#UsernameLabel {
+    overflow: hidden;
+
+    width: 10em;
+    margin-left: 1em;
+}
+
+#MMRLabel {
+    margin-left: 1em;
+}
+
+#MMRDiffLabel,
+#MMRDiffLabelGreen,
+#MMRDiffLabelRed {
+    display: flex;
+    margin-left: 0.5em;
+    justify-content: flex-end;
+}
+
+#MMRDiffLabelGreen {
+    color: #36f1d2;
+}
+
+#MMRDiffLabelRed {
+    color: #cc0f4b;
+}
+
+@media (min-width: 600px) {
+    #LeaderBoardItem {
+        display: flex;
+    }
+
+    #RankLabel {
+        width: 7em;
+    }
+
+    #RankDiffLabel {
+        width: 5em;
+    }
+
+    #UsernameLabel {
+        width: 25em;
+    }
+
+    #MMRLabel {
+        width: 4em;
+    }
+
+    #RankDiffLabel,
+    #RankDiffLabelGreen,
+    #RankDiffLabelRed {
+        width: 2em;
+    }
+}
