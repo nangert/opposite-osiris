@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import LeaderboardItem from "./LeaderboardItem";
 
 import "./RankedTop50.css";
+import "./LeaderboardItem.css";
 
 //ChangeImport
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -130,6 +131,15 @@ const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
             </div>
             <div id="LeaderBoardItem">
                 <ul id="links">
+                    <li>
+                        <div id="LeaderBoardItem">
+                            <div id="RankLabel">Rank</div>
+                            <div id="RankDiffLabel">Diff</div>
+                            <div id="UsernameLabel">Player</div>
+                            <div id="MMRLabel">BlatMMR</div>
+                            <div id="MMRDiffLabel">Diff</div>
+                        </div>
+                    </li>
                     {players?.map((player: PlayerData) => {
                         const link = "/history/" + player.username;
 
