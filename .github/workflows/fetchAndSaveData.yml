@@ -3,7 +3,7 @@ name: Fetch and Save Data
 on:
     workflow_dispatch:
     schedule:
-        - cron: "30 20 * * *" # This will run the action every day at midnight UTC. You can adjust the cron schedule as needed.
+        - cron: "0 0 * * *" # This will run the action every day at midnight UTC. You can adjust the cron schedule as needed.
 
 jobs:
     fetch_and_save_data:
