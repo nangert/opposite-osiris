@@ -9,8 +9,8 @@ import "./MatchHistory.css";
 import MatchHistoryItem from "./MatchHistoryItem";
 
 //ChangeImport
-//import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+//import { createClient } from "@supabase/supabase-js";
 
 interface MatchHistoryProps {
     player: string;
@@ -105,44 +105,8 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
     //#endregion
 
-    const fetchallplayers = async () => {
-        return await supabase.from("players").select();
-    };
-
     const fetchplayer = async (username: string) => {
         return await supabase.from("players").select("username, user_id").eq("username", username);
-    };
-
-    const postPlayers = async () => {
-        const allPlayersJson = await fetchallplayers();
-        const allPlayers = allPlayersJson.data as Player[];
-
-        const rows = matches.map(
-            match =>
-                ({
-                    username: match.opponent_username,
-                    user_id: match.opponent_id,
-                } as Player)
-        );
-
-        const uniqueData = rows.reduce((uniqueList: Player[], item: Player) => {
-            const isDuplicate = uniqueList.some(uniqueItem => uniqueItem.username === item.username);
-
-            if (!isDuplicate) {
-                uniqueList.push(item);
-            }
-
-            return uniqueList;
-        }, []);
-
-        const newData = uniqueData.filter(item => {
-            return !allPlayers.some(allPlayer => allPlayer.username === item.username);
-        });
-
-        const { error } = await supabase.from("players").insert(newData);
-        if (error) {
-            console.log(error);
-        }
     };
 
     useEffect(() => {

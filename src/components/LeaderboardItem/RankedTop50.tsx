@@ -5,10 +5,11 @@ import "./RankedTop50.css";
 import "./LeaderboardItem.css";
 
 //ChangeImport
-//import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+//import { createClient } from "@supabase/supabase-js";
 
 import { Select, SelectItem } from "@mantine/core";
+import CustomLinkButton from "@components/CustomComponents/LinkButton";
 
 interface Top50RankedProps {
     players: PlayerData[];
@@ -137,7 +138,7 @@ const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
                         //TODO: LinkButton
                         return (
                             <li>
-                                <a href={link}>
+                                <CustomLinkButton href={link}>
                                     <LeaderboardItem
                                         rank={player.place}
                                         oldRank={getOldPlayerRank(player.username)}
@@ -145,7 +146,8 @@ const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
                                         blatmmr={player.rating}
                                         oldBlatmmr={getOldPlayerMMR(player.username)}
                                     />
-                                </a>
+                                </CustomLinkButton>
+                                <a href={link}></a>
                             </li>
                         );
                     })}

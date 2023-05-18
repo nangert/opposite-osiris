@@ -1,4 +1,5 @@
 import type { Match } from "@components/Interfaces";
+import "./MatchHistoryItem.css";
 
 const faction_ids = ["Lyonar", "Songhai", "Vetruvian", "Abyssian", "Magmar", "Vanar"];
 
