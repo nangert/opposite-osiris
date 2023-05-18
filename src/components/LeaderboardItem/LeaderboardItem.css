@@ -3,23 +3,17 @@
     width: 100%;
 }
 
-#RankLabel,
-#RankDiffLabel,
-#UsernameLabel,
-#MMRLabel {
-    display: flex;
+#RankLabel {
+    width: 5em;
 }
 
 #RankDiffLabel,
 #RankDiffLabelGreen,
 #RankDiffLabelRed {
+    width: 2em;
     display: flex;
     justify-content: flex-end;
-    margin-left: 0.5em;
-}
-
-#RankLabel {
-    width: 5em;
+    margin-left: 1em;
 }
 
 #RankDiffLabelGreen {
@@ -32,29 +26,8 @@
 
 #UsernameLabel {
     overflow: hidden;
-
     width: 10em;
     margin-left: 1em;
-}
-
-#MMRLabel {
-    margin-left: 1em;
-}
-
-#MMRDiffLabel,
-#MMRDiffLabelGreen,
-#MMRDiffLabelRed {
-    display: flex;
-    margin-left: 0.5em;
-    justify-content: flex-end;
-}
-
-#MMRDiffLabelGreen {
-    color: #36f1d2;
-}
-
-#MMRDiffLabelRed {
-    color: #cc0f4b;
 }
 
 @media (min-width: 600px) {
@@ -64,10 +37,6 @@
 
     #RankLabel {
         width: 7em;
-    }
-
-    #RankDiffLabel {
-        width: 5em;
     }
 
     #UsernameLabel {
