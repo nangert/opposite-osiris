@@ -1,0 +1,32 @@
+#historyItem {
+    width: 100%;
+    display: flex;
+    margin-top: 0.5em;
+}
+
+#matchDetails {
+    margin-top: 0.5em;
+}
+
+#DetailsHeader,
+#factions {
+    display: flex;
+}
+
+#faction1,
+#gameMode,
+#timestamp {
+    margin-left: 5em;
+    width: 20em;
+}
+
+#matchId {
+    width: 5em;
+}
+
+#winner,
+#neutral,
+#loser,
+#detailsWinner {
+    width: 20em;
+}

@@ -9,6 +9,7 @@ interface LeaderboardItem {
 }
 
 const calcRankDiff = (rank: number, oldRank: string) => {
+    if (oldRank === "") return "";
     if (!isNaN(Number(oldRank))) {
         const change = Number(oldRank) - rank;
         return change == 0 ? "" : change > 0 ? "+" + change : change;
@@ -17,6 +18,7 @@ const calcRankDiff = (rank: number, oldRank: string) => {
 };
 
 const calcMmrDiff = (blatmmr: number, oldBlatmmr: string) => {
+    if (oldBlatmmr === "") return "";
     if (!isNaN(Number(oldBlatmmr))) {
         const change = blatmmr - Number(oldBlatmmr);
         return change == 0 ? "" : change > 0 ? "+" + change : change;
@@ -42,7 +44,7 @@ const getMMRLabelColor = (rank: number, oldRank: string) => {
     return "RankDiffLabel";
 };
 
-const LeaderboardItem: React.FC<LeaderboardItem> = ({ rank, oldRank, username, blatmmr, oldBlatmmr }) => {
+const LeaderboardItem = ({ rank, oldRank, username, blatmmr, oldBlatmmr }: LeaderboardItem) => {
     return (
         <div id="LeaderBoardItem">
             <div id="RankLabel">Rank: {rank}</div>

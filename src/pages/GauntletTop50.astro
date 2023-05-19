@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import GauntletTop50 from "@components/LeaderboardItem/GauntletTop50";
 
 interface PlayerData {
     username: string;
@@ -21,17 +22,7 @@ const data = await response.json();
         <section id="hero">
             <h1>Gauntlet Top 50 BlatMMR</h1>
             <br />
-            <ul>
-                {
-                    data.players.map((player: PlayerData) => (
-                        <li>
-                            <h4>
-                                Rank: {player.place} - {player.username}: {player.rating}
-                            </h4>
-                        </li>
-                    ))
-                }
-            </ul>
+            <GauntletTop50 client:load players={data.players} />
         </section>
     </main>
     <Footer />

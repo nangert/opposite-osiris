@@ -205,9 +205,9 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
             <ul id="list">
                 {filtered &&
-                    filtered.map((match: Match) => (
+                    filtered.map((match: Match, key: number) => (
                         <>
-                            <MatchHistoryItem match={match} player={player} />
+                            <MatchHistoryItem matchId={key} match={match} player={player} />
                         </>
                     ))}
             </ul>

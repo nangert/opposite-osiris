@@ -135,7 +135,6 @@ const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
                     {players?.map((player: PlayerData) => {
                         const link = "/history/" + player.username;
 
-                        //TODO: LinkButton
                         return (
                             <li>
                                 <CustomLinkButton href={link}>
