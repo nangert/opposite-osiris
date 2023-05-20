@@ -5,8 +5,8 @@ import "./RankedTop50.css";
 import "./LeaderboardItem.css";
 
 //ChangeImport
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-//import { createClient } from "@supabase/supabase-js";
+//import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 
 import { Select, SelectItem } from "@mantine/core";
 import CustomLinkButton from "@components/CustomComponents/LinkButton";

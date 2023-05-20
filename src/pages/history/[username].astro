@@ -3,6 +3,9 @@ import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import MatchHistory from "../../components/MatchHistory/MatchHistory";
+import React from "react";
+import type { Match } from "@components/Interfaces";
+import { PlayerHistoryContext } from "../../components/MatchHistory/PlayerHistoryContext";
 
 const { username } = Astro.params;
 ---
@@ -11,7 +14,9 @@ const { username } = Astro.params;
     <Header activeNav="history" />
     <main id="main-content">
         <section id="hero">
-            <MatchHistory client:load player={username ?? ""} />
+            <PlayerHistoryContext.Provider value={{ username: "Test", history: [] as Match[] }}>
+                <MatchHistory client:load player={username ?? ""} />
+            </PlayerHistoryContext.Provider>
         </section>
     </main>
     <Footer />
