@@ -7,13 +7,12 @@ import CustomTextInput from "@components/CustomComponents/CustomTextInput";
 import type { Match, Player } from "../Interfaces";
 import "./MatchHistory.css";
 import MatchHistoryItem from "./MatchHistoryItem";
-
-//ChangeImport
-//import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { createClient } from "@supabase/supabase-js";
 import React from "react";
 import { PlayerHistoryContext } from "./PlayerHistoryContext";
 
+//ChangeImport
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+//import { createClient } from "@supabase/supabase-js";
 interface MatchHistoryProps {
     player: string;
 }
