@@ -41,7 +41,7 @@ const anonKey =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGhwaXdyZG1uemhkamlkbndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODEyNDY5NzIsImV4cCI6MTk5NjgyMjk3Mn0.xCWTsPeKXrVA-yw6KNcJL33Nf4MzbrS6gL0MGQmNG0M";
 const supabase = createClient(dbUrl, anonKey);
 
-const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
+const RankedTop50 = ({ players }: Top50RankedProps) => {
     const [timestamps, setTimestamps] = useState([] as HistoryTimestamp[]);
     const [currTimestamp, setCurrTimestamp] = useState<string | null>("16");
     const [comparison, setComparison] = useState([] as HistoryPlayerData[]);

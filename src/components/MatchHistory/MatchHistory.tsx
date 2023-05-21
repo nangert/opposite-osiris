@@ -1,21 +1,17 @@
+import CustomCheckbox from "@components/CustomComponents/CustomCheckbox";
+import CustomTextInput from "@components/CustomComponents/CustomTextInput";
 import { Button, Collapse, Grid } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Fuse from "fuse.js";
-import { useEffect, useState } from "react";
-import CustomCheckbox from "@components/CustomComponents/CustomCheckbox";
-import CustomTextInput from "@components/CustomComponents/CustomTextInput";
+import { useContext, useEffect, useState } from "react";
 import type { Match, Player } from "../Interfaces";
 import "./MatchHistory.css";
 import MatchHistoryItem from "./MatchHistoryItem";
-import React from "react";
 import { PlayerHistoryContext } from "./PlayerHistoryContext";
 
 //ChangeImport
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 //import { createClient } from "@supabase/supabase-js";
-interface MatchHistoryProps {
-    player: string;
-}
 
 const fuseOptions = {
     keys: ["opponent_username"],
@@ -25,14 +21,13 @@ const fuseOptions = {
 
 const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=9999&blatmmr=true";
-const tokenNangert =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MzE0MjA5MywiZXhwIjoxNjg0MzUxNjkzfQ.E2K51QWkca-4S8qQ_v1-ydtL2HdzdF9AXxOQ2oY70BY";
+
 const tokenRanks =
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODM1Nzk0NTAsImV4cCI6MTY4NDc4OTA1MH0.NrjfwlD8A8pRfF8GtVBx2exPKHj2-Ec-_MS7IocUBok";
 const token = tokenRanks;
 
-const MatchHistory = ({ player }: MatchHistoryProps) => {
-    const { username } = React.useContext(PlayerHistoryContext);
+const MatchHistory = () => {
+    const { username, history, setHistory } = useContext(PlayerHistoryContext);
 
     //#region  useState
     const [loadingHistory, setLoadingHistory] = useState(true);
@@ -114,13 +109,13 @@ const MatchHistory = ({ player }: MatchHistoryProps) => {
 
     useEffect(() => {
         const fetchAndSetPlayer = async () => {
-            const playerDB = await fetchplayer(player);
+            const playerDB = await fetchplayer(username);
             if (playerDB.data) {
                 setCurrPlayer(playerDB.data[0]);
             }
         };
         fetchAndSetPlayer();
-    }, [player]);
+    }, [username]);
 
     useEffect(() => {
         setFiltered(filterMatches(matches));
@@ -165,7 +160,6 @@ const MatchHistory = ({ player }: MatchHistoryProps) => {
             >
                 Show filters
             </Button>
-            <div>{username}</div>
             <Collapse in={filtersOpen}>
                 <Grid>
                     <Grid.Col>
@@ -211,7 +205,7 @@ const MatchHistory = ({ player }: MatchHistoryProps) => {
                 {filtered &&
                     filtered.map((match: Match, key: number) => (
                         <>
-                            <MatchHistoryItem matchId={key} match={match} player={player} />
+                            <MatchHistoryItem matchId={key} match={match} player={username} />
                         </>
                     ))}
             </ul>

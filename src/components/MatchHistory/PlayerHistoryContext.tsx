@@ -1,12 +1,16 @@
 import type { Match } from "@components/Interfaces";
-import React from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
 
 type ContextProps = {
     username: string;
-    history: Match[];
+    setUsername?: Dispatch<SetStateAction<string>>;
+    history?: Match[];
+    setHistory?: Dispatch<SetStateAction<Match[]>>;
 };
 
-export const PlayerHistoryContext = React.createContext({
+export const PlayerHistoryContext = createContext<ContextProps>({
     username: "",
-    history: [] as Match[],
-} as ContextProps);
+    setUsername: () => "",
+    history: [],
+    setHistory: () => [],
+});
