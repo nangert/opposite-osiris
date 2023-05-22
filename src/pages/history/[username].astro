@@ -1,12 +1,8 @@
 ---
-import Layout from "@layouts/Layout.astro";
-import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import MatchHistory from "../../components/MatchHistory/MatchHistory";
-import React from "react";
-import type { Match } from "@components/Interfaces";
-import { PlayerHistoryContext } from "../../components/MatchHistory/PlayerHistoryContext";
-import MatchHistoryRoot from "@components/MatchHistory/MatchHistoryRoot";
+import Header from "@components/Header.astro";
+import MatchHistoryRoot from "@components/MatchHistory/PlayerRootContext";
+import Layout from "@layouts/Layout.astro";
 
 const { username } = Astro.params;
 ---

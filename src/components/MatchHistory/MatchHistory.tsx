@@ -5,9 +5,10 @@ import { useDisclosure } from "@mantine/hooks";
 import Fuse from "fuse.js";
 import { useContext, useEffect, useState } from "react";
 import type { Match, Player } from "../Interfaces";
+import { PlayerHistoryContext } from "../PlayerHistoryContext";
 import "./MatchHistory.css";
 import MatchHistoryItem from "./MatchHistoryItem";
-import { PlayerHistoryContext } from "./PlayerHistoryContext";
+import CustomButton from "@components/CustomComponents/CustomButton";
 
 //ChangeImport
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -19,23 +20,16 @@ const fuseOptions = {
     threshold: 0, // adjust the threshold based on your needs
 };
 
-const matchHistoryStart = "https://api.duelyst2.com/api/users/";
-const matchHistoryEnd = "/games?len=9999&blatmmr=true";
-
-const tokenRanks =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODM1Nzk0NTAsImV4cCI6MTY4NDc4OTA1MH0.NrjfwlD8A8pRfF8GtVBx2exPKHj2-Ec-_MS7IocUBok";
-const token = tokenRanks;
-
 const MatchHistory = () => {
-    const { username, history, setHistory } = useContext(PlayerHistoryContext);
+    const { username, history, setHistory, loading } = useContext(PlayerHistoryContext);
 
     //#region  useState
     const [loadingHistory, setLoadingHistory] = useState(true);
     const [query, setQuery] = useState("");
-    const [matches, setMatches] = useState([] as Match[]);
     const [currPlayer, setCurrPlayer] = useState<Player | undefined>(undefined);
 
     const [filtersOpen, { toggle }] = useDisclosure(false);
+    const [playerStats, setPlayerStats] = useState(false);
 
     const [onlyWins, setOnlyWins] = useState(false);
     const [onlyLosses, setOnlyLosses] = useState(false);
@@ -56,7 +50,7 @@ const MatchHistory = () => {
 
     //#region Filter
 
-    const fuse = new Fuse(matches, fuseOptions);
+    const fuse = new Fuse(history, fuseOptions);
 
     const posts = fuse.search(query).map(result => result.item);
 
@@ -101,6 +95,10 @@ const MatchHistory = () => {
         return filtered;
     };
 
+    useEffect(() => {
+        setFiltered(filterMatches(history));
+    }, [onlyWins, onlyLosses, youFactions, oppFactions, gameModes, query, loadingHistory === false]);
+
     //#endregion
 
     const fetchplayer = async (username: string) => {
@@ -117,49 +115,14 @@ const MatchHistory = () => {
         fetchAndSetPlayer();
     }, [username]);
 
-    useEffect(() => {
-        setFiltered(filterMatches(matches));
-    }, [onlyWins, onlyLosses, youFactions, oppFactions, gameModes, query, loadingHistory === false]);
-
-    useEffect(() => {
-        const fetchItems = async () => {
-            const url = matchHistoryStart + currPlayer?.user_id.trim() + matchHistoryEnd;
-            try {
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                setMatches(data);
-                setFiltered(data);
-                setLoadingHistory(false);
-            } catch (error) {
-                console.error("Error fetching items:", error);
-                setLoadingHistory(false);
-            }
-        };
-
-        if (currPlayer !== null && currPlayer !== undefined) {
-            fetchItems();
-        }
-    }, [tokenRanks, matchHistoryStart, matchHistoryEnd, currPlayer]);
-
-    if (loadingHistory) {
-        return <p>Loading data...</p>;
-    }
-
     return (
         <div>
-            <Button
-                className="bg-mantine-button dark:bg-mantine-button-dark dark:hover:bg-mantine-button-dark-hover text-mantine-button-text hover:bg-mantine-button-hover dark:text-mantine-button-text-dark"
-                onClick={toggle}
-                id="FilterButton"
-            >
-                Show filters
-            </Button>
+            <div id="header">
+                <CustomButton onClick={toggle} id="FilterButton">
+                    Show filters
+                </CustomButton>
+            </div>
+
             <Collapse in={filtersOpen}>
                 <Grid>
                     <Grid.Col>

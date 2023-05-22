@@ -1,0 +1,30 @@
+#StatsPage {
+    display: flex;
+    margin-top: 2em;
+    width: 100%;
+}
+
+#wr,
+#wrfirst,
+#faction {
+    width: 10em;
+}
+
+#wrfirst {
+    margin-left: 10em;
+}
+
+#statsHeader {
+    margin-bottom: 2em;
+}
+
+#statsHeader,
+#stats,
+#factionCollapse {
+    display: flex;
+    width: 100%;
+}
+
+#factionStats {
+    margin-bottom: 1em;
+}
