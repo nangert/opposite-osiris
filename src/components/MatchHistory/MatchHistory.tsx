@@ -27,7 +27,7 @@ const matchHistoryEnd = "/games?len=3000&blatmmr=true";
 const tokenNangert =
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MzE0MjA5MywiZXhwIjoxNjg0MzUxNjkzfQ.E2K51QWkca-4S8qQ_v1-ydtL2HdzdF9AXxOQ2oY70BY";
 const tokenRanks =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODM1Nzk0NTAsImV4cCI6MTY4NDc4OTA1MH0.NrjfwlD8A8pRfF8GtVBx2exPKHj2-Ec-_MS7IocUBok";
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODQ3NzAwOTksImV4cCI6MTY4NTk3OTY5OX0.N9toiDakTN7uXfmu9HmQs18BeqsoDZrvcUW4nUYUfpM";
 const token = tokenRanks;
 
 const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
