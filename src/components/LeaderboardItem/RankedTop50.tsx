@@ -132,11 +132,11 @@ const RankedTop50 = ({ players }: Top50RankedProps) => {
             </div>
             <div id="LeaderBoardItem">
                 <ul id="links">
-                    {players?.map((player: PlayerData) => {
+                    {players?.map((player: PlayerData, key: number) => {
                         const link = "/history/" + player.username;
 
                         return (
-                            <li>
+                            <li key={key}>
                                 <CustomLinkButton href={link}>
                                     <LeaderboardItem
                                         rank={player.place}

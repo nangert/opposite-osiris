@@ -7,17 +7,15 @@ import LinkButton from "@components/LinkButton.astro";
 interface PlayerData {
     username: string;
     portrait_id: number | null;
+    rating: number;
 }
 
-const tokenNangert =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MzE0MjA5MywiZXhwIjoxNjg0MzUxNjkzfQ.E2K51QWkca-4S8qQ_v1-ydtL2HdzdF9AXxOQ2oY70BY";
-const tokenRanks =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODM1Nzk0NTAsImV4cCI6MTY4NDc4OTA1MH0.NrjfwlD8A8pRfF8GtVBx2exPKHj2-Ec-_MS7IocUBok";
-const token = tokenRanks;
+const token =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODUwNTI5MTcsImV4cCI6MTY4NjI2MjUxN30.wvxA7NW8QkOGlGVJ4y3noB5TUKlCdjLE97XMHwemgpA";
 
 const fetchItems = async () => {
     try {
-        const response = await fetch("https://api.duelyst2.com/api/me/rank/srank_top", {
+        const response = await fetch("https://api.duelyst2.com/api/me/rank/srank_top?blatmmr=true", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -35,10 +33,10 @@ const data: PlayerData[] = await fetchItems();
 ---
 
 <Layout>
-    <Header activeNav="legacyTop20" />
+    <Header activeNav="josekiTop20" />
     <main id="main-content">
         <section id="hero">
-            <h1>Ranked Top 20 Legacy</h1>
+            <h1>Ranked Top 20 JosekiMMR</h1>
             <br />
             <ul id="links">
                 {
@@ -48,7 +46,7 @@ const data: PlayerData[] = await fetchItems();
                             <li>
                                 <LinkButton href={link}>
                                     <h4>
-                                        Rank: {index + 1} - {player.username}
+                                        Rank: {index + 1} - {player.username} - {player.rating}
                                     </h4>
                                 </LinkButton>
                             </li>

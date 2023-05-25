@@ -1,6 +1,7 @@
+import CustomButton from "@components/CustomComponents/CustomButton";
 import CustomCheckbox from "@components/CustomComponents/CustomCheckbox";
 import CustomTextInput from "@components/CustomComponents/CustomTextInput";
-import { Button, Collapse, Grid } from "@mantine/core";
+import { Collapse, Grid } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Fuse from "fuse.js";
 import { useContext, useEffect, useState } from "react";
@@ -8,7 +9,6 @@ import type { Match, Player } from "../Interfaces";
 import { PlayerHistoryContext } from "../PlayerHistoryContext";
 import "./MatchHistory.css";
 import MatchHistoryItem from "./MatchHistoryItem";
-import CustomButton from "@components/CustomComponents/CustomButton";
 
 //ChangeImport
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -165,12 +165,7 @@ const MatchHistory = () => {
             <br />
 
             <ul id="list">
-                {filtered &&
-                    filtered.map((match: Match, key: number) => (
-                        <>
-                            <MatchHistoryItem matchId={key} match={match} player={username} />
-                        </>
-                    ))}
+                {filtered && filtered.map((match: Match, key: number) => <MatchHistoryItem key={key} matchId={key} match={match} player={username} />)}
             </ul>
         </div>
     );

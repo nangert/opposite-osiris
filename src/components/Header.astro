@@ -6,7 +6,7 @@ import logoPNG from "/assets/logo.png";
 import logoSVG from "/assets/logo.svg";
 
 export interface Props {
-    activeNav?: "rankedTop50" | "gauntletTop50" | "legacyTop20" | "history" | "other";
+    activeNav?: "rankedTop50" | "gauntletTop50" | "josekiTop20" | "history" | "other";
 }
 
 const { activeNav } = Astro.props;
@@ -41,7 +41,7 @@ const { activeNav } = Astro.props;
                         <a href="/GauntletTop50" class={activeNav === "gauntletTop50" ? "active" : ""}> Gauntlet Top 50</a>
                     </li>
                     <li>
-                        <a href="/LegacyTop20" class={activeNav === "legacyTop20" ? "active" : ""}> Legacy Top 20</a>
+                        <a href="/JosekiTop20" class={activeNav === "josekiTop20" ? "active" : ""}> Joseki Top 20</a>
                     </li>
 
                     <li>

@@ -1,30 +1,30 @@
-#StatsPage {
+.statsTable {
     display: flex;
+    flex-direction: column;
+}
+
+.stat {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.statsRow {
+    margin-top: 1em;
+}
+
+.factionsHeader {
     margin-top: 2em;
-    width: 100%;
+    font-weight: bold;
+    font-size: large;
 }
 
-#wr,
-#wrfirst,
-#faction {
-    width: 10em;
-}
+@media (min-width: 600px) {
+    .statsRow {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+    }
 
-#wrfirst {
-    margin-left: 10em;
-}
-
-#statsHeader {
-    margin-bottom: 2em;
-}
-
-#statsHeader,
-#stats,
-#factionCollapse {
-    display: flex;
-    width: 100%;
-}
-
-#factionStats {
-    margin-bottom: 1em;
+    .stat {
+        grid-template-columns: 1fr;
+    }
 }

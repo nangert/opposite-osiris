@@ -16,8 +16,7 @@
 #faction1,
 #gameMode,
 #timestamp {
-    margin-left: 5em;
-    width: 20em;
+    width: 25em;
 }
 
 #matchId {
@@ -27,6 +26,24 @@
 #winner,
 #neutral,
 #loser,
-#detailsWinner {
+#detailsWinner,
+#faction2 {
     width: 20em;
+}
+
+@media (min-width: 600px) {
+    #matchDetails {
+        margin-top: 0.5em;
+    }
+
+    #faction1,
+    #gameMode,
+    #timestamp {
+        margin-left: 5em;
+        width: 20em;
+    }
+
+    #matchId {
+        width: 5em;
+    }
 }

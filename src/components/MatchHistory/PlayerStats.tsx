@@ -1,7 +1,8 @@
 import { PlayerHistoryContext } from "@components/PlayerHistoryContext";
-import { Collapse, Grid } from "@mantine/core";
+import { Collapse } from "@mantine/core";
 import { useContext, useState } from "react";
 import "./PlayerStats.css";
+import CustomLinkButton from "@components/CustomComponents/LinkButton";
 
 const PlayerStats = () => {
     const { username, history, setHistory, loading } = useContext(PlayerHistoryContext);
@@ -9,9 +10,16 @@ const PlayerStats = () => {
     const faction_ids = ["Lyonar", "Songhai", "Vetruvian", "Abyssian", "Magmar", "Vanar"];
 
     const [factionOpen, setFactionOpen] = useState<Number[]>([]);
+    const [factionAgainstOpen, setFactionAgainstOpen] = useState<Number[]>([]);
 
     const toggleFaction = (faction: number) => {
         factionOpen.includes(faction) ? setFactionOpen(factionOpen.filter(x => x !== faction)) : setFactionOpen([...factionOpen, faction]);
+    };
+
+    const toggleFactionAgainst = (faction: number) => {
+        factionAgainstOpen.includes(faction)
+            ? setFactionAgainstOpen(factionAgainstOpen.filter(x => x !== faction))
+            : setFactionAgainstOpen([...factionAgainstOpen, faction]);
     };
 
     const getFactionWr = (faction: string, mode: string) => {
@@ -35,6 +43,13 @@ const PlayerStats = () => {
         const faction_id = faction_ids.indexOf(faction);
 
         const faction_games = history.filter(x => x.faction_id === faction_id + 1 && x.is_player_1 === first && x.game_type === mode);
+        const faction_wins = faction_games.filter(x => x.is_winner);
+
+        return (faction_wins.length / faction_games.length).toFixed(2);
+    };
+
+    const getWrFirst = (mode: string, first: boolean) => {
+        const faction_games = history.filter(x => x.is_player_1 === first && x.game_type === mode);
         const faction_wins = faction_games.filter(x => x.is_winner);
 
         return (faction_wins.length / faction_games.length).toFixed(2);
@@ -67,6 +82,7 @@ const PlayerStats = () => {
     };
 
     const getBlatmFactorTotal = (mode: string) => {
+        // TODO: include draws
         const faction_games = history.filter(x => x.game_type === mode);
         const faction_wins = faction_games.filter(x => x.is_winner);
         const faction_losses = faction_games.filter(x => x.is_winner === false && x.is_draw === false);
@@ -78,79 +94,123 @@ const PlayerStats = () => {
         }
     };
 
-    //     or, when I do stats for this, I print out "+- sqrt(max(num_wins, num_losses))/num_games"
-    // the amount not the formula
     return (
-        <div id="StatsPage">
-            <ul>
-                <li id="stats">
-                    <div id="stats">
-                        <div id="wrfirst">Winrate ranked</div>
-                        <div id="wr">Ranked games</div>
-                        <div id="wr">Winrate gauntlet</div>
-                        <div id="wr">Gauntlet games</div>
+        <div className="statsTable">
+            <div className="statsRow">
+                <div className="stat">
+                    <div className="wrfirst">Winrate ranked</div>
+                    <div className="wrfirst">
+                        {getWrTotal("ranked")} +/- {getBlatmFactorTotal("ranked")}
                     </div>
-                </li>
+                </div>
+                <div className="stat">
+                    <div className="wr">Ranked games</div>
+                    <div className="wr">{getGamesTotal("ranked")}</div>
+                </div>
+                <div className="stat">
+                    <div className="wr">Winrate P1</div>
+                    <div className="wr">{getWrFirst("ranked", true)}</div>
+                </div>
+                <div className="stat">
+                    <div className="wr">Winrate P2</div>
+                    <div className="wr">{getWrFirst("ranked", false)}</div>
+                </div>
+            </div>
 
-                <li id="statsHeader">
-                    <div id="stats">
-                        <div id="wrfirst">{getWrTotal("ranked")}</div>
-                        <div id="wr">{getGamesTotal("ranked")}</div>
-                        <div id="wr">{getWrTotal("gauntlet")}</div>
-                        <div id="wr">{getGamesTotal("gauntlet")}</div>
+            <div className="statsRow">
+                <div className="stat">
+                    <div className="wrfirst">Winrate gauntlet</div>
+                    <div className="wrfirst">
+                        {getWrTotal("gauntlet")} +/- {getBlatmFactorTotal("gauntlet")}
                     </div>
-                </li>
+                </div>
+                <div className="stat">
+                    <div className="wr">Gauntlet games</div>
+                    <div className="wr">{getGamesTotal("gauntlet")}</div>
+                </div>
+                <div className="stat">
+                    <div className="wr">Winrate P1</div>
+                    <div className="wr">{getWrFirst("gauntlet", true)}</div>
+                </div>
+                <div className="stat">
+                    <div className="wr">Winrate P2</div>
+                    <div className="wr">{getWrFirst("gauntlet", false)}</div>
+                </div>
+            </div>
 
-                <li id="stats">
-                    <div id="stats">
-                        <div id="wrfirst">Blatm Factor R</div>
-                        <div id="wr">Blatm Factor G</div>
-                    </div>
-                </li>
+            <div className="factionsHeader">Factions</div>
 
-                <li id="statsHeader">
-                    <div id="stats">
-                        <div id="wrfirst">{getBlatmFactorTotal("ranked")}</div>
-                        <div id="wr">{getBlatmFactorTotal("gauntlet")}</div>
-                    </div>
-                </li>
-
-                <li>
-                    <div id="stats">
-                        <div id="faction">Faction</div>
-                        <div id="wr">WR Ranked</div>
-                        <div id="wr">Ranked games</div>
-                        <div id="wr">WR gauntlet</div>
-                        <div id="wr">Gauntlet games</div>
-                    </div>
-
-                    {faction_ids.map((faction: string, key: number) => (
-                        <div key={key} id="factionStats">
-                            <div id="stats" onClick={() => toggleFaction(key)}>
-                                <div id="faction">{faction}</div>
-                                <div id="wr">{getFactionWr(faction, "ranked")}</div>
-                                <div id="wr">{getFactionGames(faction, "ranked")}</div>
-                                <div id="wr">{getFactionWr(faction, "gauntlet")}</div>
-                                <div id="wr">{getFactionGames(faction, "gauntlet")}</div>
+            {faction_ids.map((faction: string, key: number) => {
+                return (
+                    <div key={key}>
+                        <div className="statsRow" onClick={() => toggleFaction(key)}>
+                            <div className="stat">
+                                <div className="hover:text-skin-accent">{faction}</div>
                             </div>
-                            <Collapse in={factionOpen.includes(key)}>
-                                <div id="factionCollapse">
-                                    <div id="wrfirst">Blatm Factor R</div>
-                                    <div id="wr">Blatm Factor G</div>
-                                    <div id="wr">Going First</div>
-                                    <div id="wr">Going Second</div>
-                                </div>
-                                <div id="factionCollapse">
-                                    <div id="wrfirst">{getBlatmFactorFaction(faction, "ranked")}</div>
-                                    <div id="wr">{getBlatmFactorFaction(faction, "gauntlet")}</div>
-                                    <div id="wr">{getFactionWrFirst(faction, "ranked", false)}</div>
-                                    <div id="wr">{getFactionWrFirst(faction, "gauntlet", false)}</div>
-                                </div>
-                            </Collapse>
                         </div>
-                    ))}
-                </li>
-            </ul>
+
+                        <Collapse in={factionOpen.includes(key)}>
+                            <div className="statsRow">
+                                <div className="stat">
+                                    <div className="wrfirst">Winrate ranked</div>
+                                    <div className="wrfirst">
+                                        {getFactionWr(faction, "ranked")} +/- {getBlatmFactorFaction(faction, "ranked")}
+                                    </div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wrfirst">Games ranked</div>
+                                    <div className="wrfirst">{getFactionGames(faction, "ranked")}</div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wrfirst">Winrate P1</div>
+                                    <div className="wrfirst">{getFactionWrFirst(faction, "ranked", true)}</div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wr">Winrate P2</div>
+                                    <div className="wr">{getFactionWrFirst(faction, "ranked", false)}</div>
+                                </div>
+                            </div>
+
+                            <div className="statsRow">
+                                <div className="stat">
+                                    <div className="wr">Winrate gauntlet</div>
+                                    <div className="wr">
+                                        {getFactionWr(faction, "gauntlet")} +/- {getBlatmFactorFaction(faction, "gauntlet")}
+                                    </div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wr">Games gauntlet</div>
+                                    <div className="wr">{getFactionGames(faction, "gauntlet")}</div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wrfirst">Winrate P1</div>
+                                    <div className="wrfirst">{getFactionWrFirst(faction, "gauntlet", true)}</div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wr">Winrate P2</div>
+                                    <div className="wr">{getFactionWrFirst(faction, "gauntlet", false)}</div>
+                                </div>
+                            </div>
+                        </Collapse>
+                    </div>
+                );
+            })}
+
+            <div className="factionsHeader">Factions against</div>
+
+            {faction_ids.map((faction: string, key: number) => {
+                return (
+                    <div key={key}>
+                        <div className="statsRow" onClick={() => toggleFactionAgainst(key)}>
+                            <div className="stat">
+                                <div className="hover:text-skin-accent">{faction}</div>
+                            </div>
+                        </div>
+
+                        <Collapse in={factionOpen.includes(key)}></Collapse>
+                    </div>
+                );
+            })}
         </div>
     );
 };

@@ -20,9 +20,8 @@ const fuseOptions = {
 const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=9999&blatmmr=true";
 
-const tokenRanks =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODM1Nzk0NTAsImV4cCI6MTY4NDc4OTA1MH0.NrjfwlD8A8pRfF8GtVBx2exPKHj2-Ec-_MS7IocUBok";
-const token = tokenRanks;
+const token =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODUwNTI5MTcsImV4cCI6MTY4NjI2MjUxN30.wvxA7NW8QkOGlGVJ4y3noB5TUKlCdjLE97XMHwemgpA";
 
 const PlayerRoot = () => {
     const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory } = useContext(PlayerHistoryContext);
@@ -72,7 +71,7 @@ const PlayerRoot = () => {
         if (currPlayer !== null && currPlayer !== undefined) {
             fetchItems();
         }
-    }, [tokenRanks, matchHistoryStart, matchHistoryEnd, currPlayer]);
+    }, [token, matchHistoryStart, matchHistoryEnd, currPlayer]);
 
     useEffect(() => {
         if (history.length > 0) {
