@@ -11,11 +11,9 @@ import CustomButton from "@components/CustomComponents/CustomButton";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 //import { createClient } from "@supabase/supabase-js";
 
-const fuseOptions = {
-    keys: ["opponent_username"],
-    includeScore: true,
-    threshold: 0, // adjust the threshold based on your needs
-};
+const dbUrl = "https://gblhpiwrdmnzhdjidnwi.supabase.co";
+const anonKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGhwaXdyZG1uemhkamlkbndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODEyNDY5NzIsImV4cCI6MTk5NjgyMjk3Mn0.xCWTsPeKXrVA-yw6KNcJL33Nf4MzbrS6gL0MGQmNG0M";
 
 const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=9999&blatmmr=true";
@@ -26,10 +24,9 @@ const token =
 const PlayerRoot = () => {
     const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory } = useContext(PlayerHistoryContext);
 
+    const [error401, setError401] = useState(false);
+
     const [currPlayer, setCurrPlayer] = useState<Player | undefined>(undefined);
-    const dbUrl = "https://gblhpiwrdmnzhdjidnwi.supabase.co";
-    const anonKey =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGhwaXdyZG1uemhkamlkbndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODEyNDY5NzIsImV4cCI6MTk5NjgyMjk3Mn0.xCWTsPeKXrVA-yw6KNcJL33Nf4MzbrS6gL0MGQmNG0M";
     const supabase = createClient(dbUrl, anonKey);
 
     const historyLabel = "Show match history";
@@ -60,6 +57,12 @@ const PlayerRoot = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                if (response.status === 401) {
+                    setLoading(false);
+                    setError401(true);
+                    return;
+                }
+
                 const data: Match[] = await response.json();
                 setHistory(data);
             } catch (error) {
@@ -81,6 +84,17 @@ const PlayerRoot = () => {
 
     if (loading) {
         return <p>Loading data...</p>;
+    }
+
+    if (error401) {
+        return (
+            <div>
+                <div className="textLabel">This account is not yet on the friendslist.</div>
+                <div className="textLabel">
+                    Please add <b>"duelystranks"</b> in-game for the data to be available.
+                </div>
+            </div>
+        );
     }
 
     return (

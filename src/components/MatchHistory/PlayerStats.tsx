@@ -1,14 +1,9 @@
+import GamesChart from "@components/CustomComponents/CustomGamesPlayedGraphic";
 import WinrateChart from "@components/CustomComponents/CustomWinrateGraphic";
-import type { Match } from "@components/Interfaces";
 import { PlayerHistoryContext } from "@components/PlayerHistoryContext";
 import { Collapse } from "@mantine/core";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import "./PlayerStats.css";
-
-interface Winrates {
-    timestamp: number;
-    winrate: number;
-}
 
 const PlayerStats = () => {
     const { username, history, setHistory, loading } = useContext(PlayerHistoryContext);
@@ -17,7 +12,6 @@ const PlayerStats = () => {
 
     const [factionOpen, setFactionOpen] = useState<Number[]>([]);
     const [factionAgainstOpen, setFactionAgainstOpen] = useState<Number[]>([]);
-    const [winrates, setWinrates] = useState<Winrates[]>([]);
 
     const toggleFaction = (faction: number) => {
         factionOpen.includes(faction) ? setFactionOpen(factionOpen.filter(x => x !== faction)) : setFactionOpen([...factionOpen, faction]);
@@ -35,7 +29,7 @@ const PlayerStats = () => {
         const faction_games = history.filter(x => x.faction_id === faction_id + 1 && x.game_type === mode);
         const faction_wins = faction_games.filter(x => x.is_winner);
 
-        return (faction_wins.length / faction_games.length).toFixed(2);
+        return !isNaN(faction_wins.length / faction_games.length) ? (faction_wins.length / faction_games.length).toFixed(2) : "No games";
     };
 
     const getFactionGames = (faction: string, mode: string) => {
@@ -52,21 +46,21 @@ const PlayerStats = () => {
         const faction_games = history.filter(x => x.faction_id === faction_id + 1 && x.is_player_1 === first && x.game_type === mode);
         const faction_wins = faction_games.filter(x => x.is_winner);
 
-        return (faction_wins.length / faction_games.length).toFixed(2);
+        return !isNaN(faction_wins.length / faction_games.length) ? (faction_wins.length / faction_games.length).toFixed(2) : "No games";
     };
 
     const getWrFirst = (mode: string, first: boolean) => {
         const faction_games = history.filter(x => x.is_player_1 === first && x.game_type === mode);
         const faction_wins = faction_games.filter(x => x.is_winner);
 
-        return (faction_wins.length / faction_games.length).toFixed(2);
+        return !isNaN(faction_wins.length / faction_games.length) ? (faction_wins.length / faction_games.length).toFixed(2) : "No games";
     };
 
     const getWrTotal = (mode: string) => {
         const games = history.filter(x => x.game_type === mode);
         const wins = games.filter(x => x.is_winner);
 
-        return (wins.length / games.length).toFixed(2);
+        return !isNaN(wins.length / games.length) ? (wins.length / games.length).toFixed(2) : "No games";
     };
 
     const getGamesTotal = (mode: string) => {
@@ -80,14 +74,7 @@ const PlayerStats = () => {
         const games = history.filter(x => x.opponent_faction_id === faction_id + 1 && x.game_type === mode);
         const wins = games.filter(x => x.is_winner);
 
-        return (wins.length / games.length).toFixed(2);
-    };
-
-    const getAgainstFactionGames = (faction: string, mode: string) => {
-        const faction_id = faction_ids.indexOf(faction);
-        const games = history.filter(x => x.opponent_faction_id === faction_id + 1 && x.game_type === mode);
-
-        return games.length;
+        return !isNaN(wins.length / games.length) ? (wins.length / games.length).toFixed(2) : "No games";
     };
 
     const getAgainstFactionFirst = (faction: string, mode: string, first: boolean) => {
@@ -95,7 +82,14 @@ const PlayerStats = () => {
         const games = history.filter(x => x.opponent_faction_id === faction_id + 1 && x.game_type === mode && x.is_player_1 === first);
         const wins = games.filter(x => x.is_winner);
 
-        return (wins.length / games.length).toFixed(2);
+        return !isNaN(wins.length / games.length) ? (wins.length / games.length).toFixed(2) : "No games";
+    };
+
+    const getAgainstFactionGames = (faction: string, mode: string) => {
+        const faction_id = faction_ids.indexOf(faction);
+        const games = history.filter(x => x.opponent_faction_id === faction_id + 1 && x.game_type === mode);
+
+        return games.length;
     };
 
     const getBlatmFactorFaction = (faction: string, mode: string) => {
@@ -106,9 +100,13 @@ const PlayerStats = () => {
         const faction_losses = faction_games.filter(x => x.is_winner === false && x.is_draw === false);
 
         if (faction_wins.length > faction_losses.length) {
-            return (Math.sqrt(faction_wins.length + faction_draws.length / 2) / faction_games.length).toFixed(2);
+            return !isNaN(Math.sqrt(faction_wins.length + faction_draws.length / 2) / faction_games.length)
+                ? "+/- " + (Math.sqrt(faction_wins.length + faction_draws.length / 2) / faction_games.length).toFixed(2)
+                : "";
         } else {
-            return (Math.sqrt(faction_losses.length + faction_draws.length / 2) / faction_games.length).toFixed(2);
+            return !isNaN(Math.sqrt(faction_losses.length + faction_draws.length / 2) / faction_games.length)
+                ? "+/- " + (Math.sqrt(faction_losses.length + faction_draws.length / 2) / faction_games.length).toFixed(2)
+                : "";
         }
     };
 
@@ -120,9 +118,13 @@ const PlayerStats = () => {
         const faction_losses = faction_games.filter(x => x.is_winner === false && x.is_draw === false);
 
         if (faction_wins.length > faction_losses.length) {
-            return (Math.sqrt(faction_wins.length + faction_draws.length / 2) / faction_games.length).toFixed(2);
+            return !isNaN(Math.sqrt(faction_wins.length + faction_draws.length / 2) / faction_games.length)
+                ? "+/- " + (Math.sqrt(faction_wins.length + faction_draws.length / 2) / faction_games.length).toFixed(2)
+                : "";
         } else {
-            return (Math.sqrt(faction_losses.length + faction_draws.length / 2) / faction_games.length).toFixed(2);
+            return !isNaN(Math.sqrt(faction_losses.length + faction_draws.length / 2) / faction_games.length)
+                ? "+/- " + (Math.sqrt(faction_losses.length + faction_draws.length / 2) / faction_games.length).toFixed(2)
+                : "";
         }
     };
 
@@ -133,38 +135,15 @@ const PlayerStats = () => {
         const losses = games.filter(x => x.is_winner === false && x.is_draw === false);
 
         if (wins.length > losses.length) {
-            return (Math.sqrt(wins.length + draws.length / 2) / games.length).toFixed(2);
+            return !isNaN(Math.sqrt(wins.length + draws.length / 2) / games.length)
+                ? "+/- " + (Math.sqrt(wins.length + draws.length / 2) / games.length).toFixed(2)
+                : "";
         } else {
-            return (Math.sqrt(losses.length + draws.length / 2) / games.length).toFixed(2);
+            return !isNaN(Math.sqrt(losses.length + draws.length / 2) / games.length)
+                ? "+/- " + (Math.sqrt(losses.length + draws.length / 2) / games.length).toFixed(2)
+                : "";
         }
     };
-
-    const calculateRollingWinrate = (matches: Match[], windowSize: number) => {
-        let winrates = [];
-        for (let i = windowSize; i <= matches.length; i++) {
-            let windowMatches = matches.slice(i - windowSize, i);
-            let wins = windowMatches.filter(match => match.is_winner).length;
-            let winrate = wins / windowSize;
-            winrates.push({
-                timestamp: windowMatches[windowMatches.length - 1].created_at,
-                winrate: winrate,
-            });
-        }
-
-        return winrates;
-    };
-
-    const getRollingWinrateMode = (mode: string) => {
-        const games = history.filter(x => x.game_type === mode);
-        const reversedGames = [...games].reverse();
-        const winrates = calculateRollingWinrate(reversedGames, 100);
-        return winrates;
-    };
-
-    useEffect(() => {
-        const rankedWr = getRollingWinrateMode("ranked");
-        setWinrates(rankedWr);
-    }, [history]);
 
     return (
         <div className="statsTable">
@@ -172,7 +151,7 @@ const PlayerStats = () => {
                 <div className="stat">
                     <div className="wrfirst">Winrate ranked</div>
                     <div className="wrfirst">
-                        {getWrTotal("ranked")} +/- {getBlatmFactorTotal("ranked")}
+                        {getWrTotal("ranked")} {getBlatmFactorTotal("ranked")}
                     </div>
                 </div>
                 <div className="stat">
@@ -193,7 +172,7 @@ const PlayerStats = () => {
                 <div className="stat">
                     <div className="wrfirst">Winrate gauntlet</div>
                     <div className="wrfirst">
-                        {getWrTotal("gauntlet")} +/- {getBlatmFactorTotal("gauntlet")}
+                        {getWrTotal("gauntlet")} {getBlatmFactorTotal("gauntlet")}
                     </div>
                 </div>
                 <div className="stat">
@@ -210,9 +189,15 @@ const PlayerStats = () => {
                 </div>
             </div>
 
-            {winrates.length > 0 && (
-                <div>
-                    <WinrateChart dataWr={winrates}></WinrateChart>
+            {history.length > 0 && (
+                <div className="wrChart">
+                    <WinrateChart history={history}></WinrateChart>
+                </div>
+            )}
+
+            {history.length > 0 && (
+                <div className="wrChart">
+                    <GamesChart matches={[...history].reverse()}></GamesChart>
                 </div>
             )}
 
@@ -232,7 +217,7 @@ const PlayerStats = () => {
                                 <div className="stat">
                                     <div className="wrfirst">Winrate ranked</div>
                                     <div className="wrfirst">
-                                        {getFactionWr(faction, "ranked")} +/- {getBlatmFactorFaction(faction, "ranked")}
+                                        {getFactionWr(faction, "ranked")} {getBlatmFactorFaction(faction, "ranked")}
                                     </div>
                                 </div>
                                 <div className="stat">
@@ -253,7 +238,7 @@ const PlayerStats = () => {
                                 <div className="stat">
                                     <div className="wr">Winrate gauntlet</div>
                                     <div className="wr">
-                                        {getFactionWr(faction, "gauntlet")} +/- {getBlatmFactorFaction(faction, "gauntlet")}
+                                        {getFactionWr(faction, "gauntlet")} {getBlatmFactorFaction(faction, "gauntlet")}
                                     </div>
                                 </div>
                                 <div className="stat">
@@ -290,7 +275,7 @@ const PlayerStats = () => {
                                 <div className="stat">
                                     <div className="wrfirst">Winrate ranked</div>
                                     <div className="wrfirst">
-                                        {getAgainstFaction(faction, "ranked")} +/- {getBlatmFactorFactionAgainst(faction, "ranked")}
+                                        {getAgainstFaction(faction, "ranked")} {getBlatmFactorFactionAgainst(faction, "ranked")}
                                     </div>
                                 </div>
                                 <div className="stat">
@@ -311,7 +296,7 @@ const PlayerStats = () => {
                                 <div className="stat">
                                     <div className="wrfirst">Winrate gauntlet</div>
                                     <div className="wrfirst">
-                                        {getAgainstFaction(faction, "gauntlet")} +/- {getBlatmFactorFactionAgainst(faction, "gauntlet")}
+                                        {getAgainstFaction(faction, "gauntlet")} {getBlatmFactorFactionAgainst(faction, "gauntlet")}
                                     </div>
                                 </div>
                                 <div className="stat">

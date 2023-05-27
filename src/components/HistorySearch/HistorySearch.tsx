@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CustomTextInput from "@components/CustomComponents/CustomTextInput";
 import { Button, Grid } from "@mantine/core";
+import CustomButton from "@components/CustomComponents/CustomButton";
 
 const HistorySearch = () => {
     const [playerName, setPlayerName] = useState("");
@@ -23,12 +24,7 @@ const HistorySearch = () => {
                     <CustomTextInput onChange={handlePlayerName} value={playerName} />
                 </Grid.Col>
                 <Grid.Col span={2}>
-                    <Button
-                        className="bg-mantine-button dark:bg-mantine-button-dark dark:hover:bg-mantine-button-dark-hover text-mantine-button-text hover:bg-mantine-button-hover dark:text-mantine-button-text-dark"
-                        onClick={handleClick}
-                    >
-                        Search
-                    </Button>
+                    <CustomButton onClick={handleClick}>Search</CustomButton>
                 </Grid.Col>
             </Grid>
         </>

@@ -3,11 +3,12 @@ import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import LinkButton from "@components/LinkButton.astro";
+import JosekiTop50 from "@components/LeaderboardItem/JosekiTop50";
 
 interface PlayerData {
     username: string;
-    portrait_id: number | null;
     rating: number;
+    place: number;
 }
 
 const token =
@@ -38,22 +39,7 @@ const data: PlayerData[] = await fetchItems();
         <section id="hero">
             <h1>Ranked Top 20 JosekiMMR</h1>
             <br />
-            <ul id="links">
-                {
-                    data.map((player: PlayerData, index: number) => {
-                        const link = "/history/" + player.username;
-                        return (
-                            <li>
-                                <LinkButton href={link}>
-                                    <h4>
-                                        Rank: {index + 1} - {player.username} - {player.rating}
-                                    </h4>
-                                </LinkButton>
-                            </li>
-                        );
-                    })
-                }
-            </ul>
+            <JosekiTop50 client:load players={data} />
         </section>
     </main>
     <Footer />

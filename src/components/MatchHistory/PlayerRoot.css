@@ -12,3 +12,7 @@
 #TabsButton {
     justify-content: end;
 }
+
+.textLabel {
+    margin-top: 1em;
+}

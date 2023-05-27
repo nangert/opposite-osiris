@@ -3,3 +3,5 @@ x Ranked top 50 improvements
 - Finishing player stats page
 - Doing player achievements board 
 - Doing global stats page
+- Rewrite Player script to save all username - user_id combinations
+- Expand database to store matches

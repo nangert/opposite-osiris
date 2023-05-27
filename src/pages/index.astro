@@ -9,25 +9,11 @@ import HistorySearch from "@components/HistorySearch/HistorySearch";
     <Header />
     <main id="main-content">
         <section id="hero">
-            <h1>Player match history:</h1>
+            <h1>Player page</h1>
 
-            <h4>
-                To see a players match history enter the IGN and search. For this feature to work the player with the IGN has to be on the friendslist of <b
-                    >'Duelystranks'</b
-                >.
-
-                <br /><br />
-                The feature might brake from time to time due to some api stuff as of now and is overall not yet finished, but feel free to use it.
-                <br />If it doesn't work for an IGN that is on the friendslist tell me on Discord (Nangert#1024) and I'll resolve the issue.
-
-                <br /><br />
-            </h4>
             <HistorySearch client:load />
 
-            <h4>
-                <br /><br />
-                This feature also works by clicking on a player on the <b>'Ranked Top 50'</b> view <b>if</b> the player is on <b>'Duelystranks'</b> friendslist.
-            </h4>
+            <div id="infoBox">Now includes a profile page with some graphs and winrate stats.</div>
         </section>
     </main>
 
@@ -56,6 +42,10 @@ import HistorySearch from "@components/HistorySearch/HistorySearch";
     }
     .social-links {
         @apply mr-2 mb-1 whitespace-nowrap sm:mb-0;
+    }
+
+    #infoBox {
+        @apply mt-4 flex;
     }
 
     /* ===== Featured & Recent Posts Sections ===== */
