@@ -68,7 +68,6 @@ const RankedTop50 = ({ players }: Top50RankedProps) => {
     };
 
     const fetchComparisonFromTimestamp = async (timestampID: number) => {
-        console.log(timestampID);
         const { data, error } = await supabase.from("RankedTop50Players").select().order("placement", { ascending: true }).eq("timestamp_id", timestampID);
 
         if (error) {
@@ -105,6 +104,7 @@ const RankedTop50 = ({ players }: Top50RankedProps) => {
             if (players && players.length > 0) {
                 const timestamps: HistoryTimestamp[] = await fetchHistoryTimestamps();
                 if (timestamps && timestamps.length > 0) {
+                    setCurrTimestamp(timestamps[0].id.toString());
                     setTimestamps(timestamps);
                 }
             } else {
@@ -118,7 +118,6 @@ const RankedTop50 = ({ players }: Top50RankedProps) => {
         const fetchAndSetComparison = async () => {
             const comparison: HistoryPlayerData[] = await fetchComparisonFromTimestamp(Number(currTimestamp));
             if (comparison) {
-                console.log(comparison);
                 setComparison(comparison);
             }
         };

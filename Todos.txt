@@ -1,0 +1,5 @@
+- Rework landing page
+x Ranked top 50 improvements 
+- Finishing player stats page
+- Doing player achievements board 
+- Doing global stats page

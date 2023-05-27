@@ -1,8 +1,14 @@
+import WinrateChart from "@components/CustomComponents/CustomWinrateGraphic";
+import type { Match } from "@components/Interfaces";
 import { PlayerHistoryContext } from "@components/PlayerHistoryContext";
 import { Collapse } from "@mantine/core";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./PlayerStats.css";
-import CustomLinkButton from "@components/CustomComponents/LinkButton";
+
+interface Winrates {
+    timestamp: number;
+    winrate: number;
+}
 
 const PlayerStats = () => {
     const { username, history, setHistory, loading } = useContext(PlayerHistoryContext);
@@ -11,6 +17,7 @@ const PlayerStats = () => {
 
     const [factionOpen, setFactionOpen] = useState<Number[]>([]);
     const [factionAgainstOpen, setFactionAgainstOpen] = useState<Number[]>([]);
+    const [winrates, setWinrates] = useState<Winrates[]>([]);
 
     const toggleFaction = (faction: number) => {
         factionOpen.includes(faction) ? setFactionOpen(factionOpen.filter(x => x !== faction)) : setFactionOpen([...factionOpen, faction]);
@@ -55,19 +62,6 @@ const PlayerStats = () => {
         return (faction_wins.length / faction_games.length).toFixed(2);
     };
 
-    const getBlatmFactorFaction = (faction: string, mode: string) => {
-        const faction_id = faction_ids.indexOf(faction);
-        const faction_games = history.filter(x => x.faction_id === faction_id + 1 && x.game_type === mode);
-        const faction_wins = faction_games.filter(x => x.is_winner);
-        const faction_losses = faction_games.filter(x => x.is_winner === false && x.is_draw === false);
-
-        if (faction_wins.length > faction_losses.length) {
-            return (Math.sqrt(faction_wins.length) / faction_games.length).toFixed(2);
-        } else {
-            return (Math.sqrt(faction_losses.length) / faction_games.length).toFixed(2);
-        }
-    };
-
     const getWrTotal = (mode: string) => {
         const games = history.filter(x => x.game_type === mode);
         const wins = games.filter(x => x.is_winner);
@@ -81,18 +75,96 @@ const PlayerStats = () => {
         return games.length;
     };
 
-    const getBlatmFactorTotal = (mode: string) => {
-        // TODO: include draws
-        const faction_games = history.filter(x => x.game_type === mode);
+    const getAgainstFaction = (faction: string, mode: string) => {
+        const faction_id = faction_ids.indexOf(faction);
+        const games = history.filter(x => x.opponent_faction_id === faction_id + 1 && x.game_type === mode);
+        const wins = games.filter(x => x.is_winner);
+
+        return (wins.length / games.length).toFixed(2);
+    };
+
+    const getAgainstFactionGames = (faction: string, mode: string) => {
+        const faction_id = faction_ids.indexOf(faction);
+        const games = history.filter(x => x.opponent_faction_id === faction_id + 1 && x.game_type === mode);
+
+        return games.length;
+    };
+
+    const getAgainstFactionFirst = (faction: string, mode: string, first: boolean) => {
+        const faction_id = faction_ids.indexOf(faction);
+        const games = history.filter(x => x.opponent_faction_id === faction_id + 1 && x.game_type === mode && x.is_player_1 === first);
+        const wins = games.filter(x => x.is_winner);
+
+        return (wins.length / games.length).toFixed(2);
+    };
+
+    const getBlatmFactorFaction = (faction: string, mode: string) => {
+        const faction_id = faction_ids.indexOf(faction);
+        const faction_games = history.filter(x => x.faction_id === faction_id + 1 && x.game_type === mode);
         const faction_wins = faction_games.filter(x => x.is_winner);
+        const faction_draws = faction_games.filter(x => x.is_draw);
         const faction_losses = faction_games.filter(x => x.is_winner === false && x.is_draw === false);
 
         if (faction_wins.length > faction_losses.length) {
-            return (Math.sqrt(faction_wins.length) / faction_games.length).toFixed(2);
+            return (Math.sqrt(faction_wins.length + faction_draws.length / 2) / faction_games.length).toFixed(2);
         } else {
-            return (Math.sqrt(faction_losses.length) / faction_games.length).toFixed(2);
+            return (Math.sqrt(faction_losses.length + faction_draws.length / 2) / faction_games.length).toFixed(2);
         }
     };
+
+    const getBlatmFactorFactionAgainst = (faction: string, mode: string) => {
+        const faction_id = faction_ids.indexOf(faction);
+        const faction_games = history.filter(x => x.opponent_faction_id === faction_id + 1 && x.game_type === mode);
+        const faction_wins = faction_games.filter(x => x.is_winner);
+        const faction_draws = faction_games.filter(x => x.is_draw);
+        const faction_losses = faction_games.filter(x => x.is_winner === false && x.is_draw === false);
+
+        if (faction_wins.length > faction_losses.length) {
+            return (Math.sqrt(faction_wins.length + faction_draws.length / 2) / faction_games.length).toFixed(2);
+        } else {
+            return (Math.sqrt(faction_losses.length + faction_draws.length / 2) / faction_games.length).toFixed(2);
+        }
+    };
+
+    const getBlatmFactorTotal = (mode: string) => {
+        const games = history.filter(x => x.game_type === mode);
+        const wins = games.filter(x => x.is_winner);
+        const draws = games.filter(x => x.is_draw);
+        const losses = games.filter(x => x.is_winner === false && x.is_draw === false);
+
+        if (wins.length > losses.length) {
+            return (Math.sqrt(wins.length + draws.length / 2) / games.length).toFixed(2);
+        } else {
+            return (Math.sqrt(losses.length + draws.length / 2) / games.length).toFixed(2);
+        }
+    };
+
+    const calculateRollingWinrate = (matches: Match[], windowSize: number) => {
+        let winrates = [];
+        for (let i = windowSize; i <= matches.length; i++) {
+            let windowMatches = matches.slice(i - windowSize, i);
+            let wins = windowMatches.filter(match => match.is_winner).length;
+            let winrate = wins / windowSize;
+            winrates.push({
+                timestamp: windowMatches[windowMatches.length - 1].created_at,
+                winrate: winrate,
+            });
+        }
+
+        return winrates;
+    };
+
+    const getRollingWinrateMode = (mode: string) => {
+        const games = history.filter(x => x.game_type === mode);
+        const reversedGames = [...games].reverse();
+        const winrates = calculateRollingWinrate(reversedGames, 100);
+        return winrates;
+    };
+
+    useEffect(() => {
+        const rankedWr = getRollingWinrateMode("ranked");
+        setWinrates(rankedWr);
+    }, [history]);
 
     return (
         <div className="statsTable">
@@ -137,6 +209,12 @@ const PlayerStats = () => {
                     <div className="wr">{getWrFirst("gauntlet", false)}</div>
                 </div>
             </div>
+
+            {winrates.length > 0 && (
+                <div>
+                    <WinrateChart dataWr={winrates}></WinrateChart>
+                </div>
+            )}
 
             <div className="factionsHeader">Factions</div>
 
@@ -207,7 +285,49 @@ const PlayerStats = () => {
                             </div>
                         </div>
 
-                        <Collapse in={factionOpen.includes(key)}></Collapse>
+                        <Collapse in={factionAgainstOpen.includes(key)}>
+                            <div className="statsRow">
+                                <div className="stat">
+                                    <div className="wrfirst">Winrate ranked</div>
+                                    <div className="wrfirst">
+                                        {getAgainstFaction(faction, "ranked")} +/- {getBlatmFactorFactionAgainst(faction, "ranked")}
+                                    </div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wrfirst">Games ranked</div>
+                                    <div className="wrfirst">{getAgainstFactionGames(faction, "ranked")}</div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wrfirst">Winrate P1</div>
+                                    <div className="wrfirst">{getAgainstFactionFirst(faction, "ranked", true)}</div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wr">Winrate P2</div>
+                                    <div className="wr">{getAgainstFactionFirst(faction, "ranked", false)}</div>
+                                </div>
+                            </div>
+
+                            <div className="statsRow">
+                                <div className="stat">
+                                    <div className="wrfirst">Winrate gauntlet</div>
+                                    <div className="wrfirst">
+                                        {getAgainstFaction(faction, "gauntlet")} +/- {getBlatmFactorFactionAgainst(faction, "gauntlet")}
+                                    </div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wrfirst">Games gauntlet</div>
+                                    <div className="wrfirst">{getAgainstFactionGames(faction, "gauntlet")}</div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wrfirst">Winrate P1</div>
+                                    <div className="wrfirst">{getAgainstFactionFirst(faction, "gauntlet", true)}</div>
+                                </div>
+                                <div className="stat">
+                                    <div className="wr">Winrate P2</div>
+                                    <div className="wr">{getAgainstFactionFirst(faction, "gauntlet", false)}</div>
+                                </div>
+                            </div>
+                        </Collapse>
                     </div>
                 );
             })}
