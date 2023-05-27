@@ -89,9 +89,11 @@ const PlayerRoot = () => {
     if (error401) {
         return (
             <div>
-                <div className="textLabel">This account is not yet on the friendslist.</div>
                 <div className="textLabel">
-                    Please add <b>"duelystranks"</b> in-game for the data to be available.
+                    The account <b>{username}</b> is not yet on the friendslist.
+                </div>
+                <div className="textLabel">
+                    Please add <b>duelystranks</b> in-game for the data to be available.
                 </div>
             </div>
         );
