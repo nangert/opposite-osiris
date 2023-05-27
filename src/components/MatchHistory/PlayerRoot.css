@@ -1,0 +1,18 @@
+#Header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#Username {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+#TabsButton {
+    justify-content: end;
+}
+
+.textLabel {
+    margin-top: 1em;
+}

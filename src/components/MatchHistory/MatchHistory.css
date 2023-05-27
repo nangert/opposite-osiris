@@ -13,3 +13,8 @@
 #FilterButton {
     margin-bottom: 1em;
 }
+
+#header {
+    display: flex;
+    justify-content: flex-end;
+}

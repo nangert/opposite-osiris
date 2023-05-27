@@ -1,8 +1,8 @@
 ---
-import Layout from "@layouts/Layout.astro";
-import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import MatchHistory from "../../components/MatchHistory/MatchHistory";
+import Header from "@components/Header.astro";
+import MatchHistoryRoot from "@components/MatchHistory/PlayerRootContext";
+import Layout from "@layouts/Layout.astro";
 
 const { username } = Astro.params;
 ---
@@ -11,57 +11,57 @@ const { username } = Astro.params;
     <Header activeNav="history" />
     <main id="main-content">
         <section id="hero">
-            <MatchHistory client:load player={username ?? ""} />
+            <MatchHistoryRoot client:load username={username ?? ""} />
         </section>
+        <Footer />
     </main>
-    <Footer />
+
+    <style>
+        /* ===== Hero Section ===== */
+        #winner {
+            color: #36f1d2;
+        }
+
+        #loser {
+            color: #cc0f4b;
+        }
+        #hero {
+            @apply pt-8 pb-6;
+        }
+
+        #matchHistory {
+            @apply text-center;
+        }
+        #hero h1 {
+            @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
+        }
+        #hero .rss-link {
+            @apply mb-6;
+        }
+        #hero .rss-icon {
+            @apply mb-2 h-6 w-6 scale-110 fill-skin-accent sm:mb-3 sm:scale-125;
+        }
+        #hero p {
+            @apply my-2;
+        }
+        .social-wrapper {
+            @apply mt-4 flex flex-col sm:flex-row sm:items-center;
+        }
+        .social-links {
+            @apply mr-2 mb-1 whitespace-nowrap sm:mb-0;
+        }
+
+        /* ===== Featured & Recent Posts Sections ===== */
+        #featured,
+        #recent-posts {
+            @apply pt-12 pb-6;
+        }
+        #featured h2,
+        #recent-posts h2 {
+            @apply text-2xl font-semibold tracking-wide;
+        }
+        .all-posts-btn-wrapper {
+            @apply my-8 text-center;
+        }
+    </style>
 </Layout>
-
-<style>
-    /* ===== Hero Section ===== */
-    #winner {
-        color: #36f1d2;
-    }
-
-    #loser {
-        color: #cc0f4b;
-    }
-    #hero {
-        @apply pt-8 pb-6;
-    }
-
-    #matchHistory {
-        @apply text-center;
-    }
-    #hero h1 {
-        @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
-    }
-    #hero .rss-link {
-        @apply mb-6;
-    }
-    #hero .rss-icon {
-        @apply mb-2 h-6 w-6 scale-110 fill-skin-accent sm:mb-3 sm:scale-125;
-    }
-    #hero p {
-        @apply my-2;
-    }
-    .social-wrapper {
-        @apply mt-4 flex flex-col sm:flex-row sm:items-center;
-    }
-    .social-links {
-        @apply mr-2 mb-1 whitespace-nowrap sm:mb-0;
-    }
-
-    /* ===== Featured & Recent Posts Sections ===== */
-    #featured,
-    #recent-posts {
-        @apply pt-12 pb-6;
-    }
-    #featured h2,
-    #recent-posts h2 {
-        @apply text-2xl font-semibold tracking-wide;
-    }
-    .all-posts-btn-wrapper {
-        @apply my-8 text-center;
-    }
-</style>

@@ -41,7 +41,7 @@ const anonKey =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGhwaXdyZG1uemhkamlkbndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODEyNDY5NzIsImV4cCI6MTk5NjgyMjk3Mn0.xCWTsPeKXrVA-yw6KNcJL33Nf4MzbrS6gL0MGQmNG0M";
 const supabase = createClient(dbUrl, anonKey);
 
-const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
+const RankedTop50 = ({ players }: Top50RankedProps) => {
     const [timestamps, setTimestamps] = useState([] as HistoryTimestamp[]);
     const [currTimestamp, setCurrTimestamp] = useState<string | null>("16");
     const [comparison, setComparison] = useState([] as HistoryPlayerData[]);
@@ -68,7 +68,6 @@ const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
     };
 
     const fetchComparisonFromTimestamp = async (timestampID: number) => {
-        console.log(timestampID);
         const { data, error } = await supabase.from("RankedTop50Players").select().order("placement", { ascending: true }).eq("timestamp_id", timestampID);
 
         if (error) {
@@ -105,6 +104,7 @@ const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
             if (players && players.length > 0) {
                 const timestamps: HistoryTimestamp[] = await fetchHistoryTimestamps();
                 if (timestamps && timestamps.length > 0) {
+                    setCurrTimestamp(timestamps[0].id.toString());
                     setTimestamps(timestamps);
                 }
             } else {
@@ -118,7 +118,6 @@ const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
         const fetchAndSetComparison = async () => {
             const comparison: HistoryPlayerData[] = await fetchComparisonFromTimestamp(Number(currTimestamp));
             if (comparison) {
-                console.log(comparison);
                 setComparison(comparison);
             }
         };
@@ -132,11 +131,11 @@ const RankedTop50: React.FC<Top50RankedProps> = ({ players }) => {
             </div>
             <div id="LeaderBoardItem">
                 <ul id="links">
-                    {players?.map((player: PlayerData) => {
+                    {players?.map((player: PlayerData, key: number) => {
                         const link = "/history/" + player.username;
 
                         return (
-                            <li>
+                            <li key={key}>
                                 <CustomLinkButton href={link}>
                                     <LeaderboardItem
                                         rank={player.place}

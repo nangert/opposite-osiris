@@ -1,10 +1,12 @@
-import { Button, Collapse, Grid } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import Fuse from "fuse.js";
-import { useEffect, useState } from "react";
+import CustomButton from "@components/CustomComponents/CustomButton";
 import CustomCheckbox from "@components/CustomComponents/CustomCheckbox";
 import CustomTextInput from "@components/CustomComponents/CustomTextInput";
+import { Collapse, Grid } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import Fuse from "fuse.js";
+import { useContext, useEffect, useState } from "react";
 import type { Match, Player } from "../Interfaces";
+import { PlayerHistoryContext } from "../PlayerHistoryContext";
 import "./MatchHistory.css";
 import MatchHistoryItem from "./MatchHistoryItem";
 
@@ -12,32 +14,22 @@ import MatchHistoryItem from "./MatchHistoryItem";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 //import { createClient } from "@supabase/supabase-js";
 
-interface MatchHistoryProps {
-    player: string;
-}
-
 const fuseOptions = {
     keys: ["opponent_username"],
     includeScore: true,
     threshold: 0, // adjust the threshold based on your needs
 };
 
-const matchHistoryStart = "https://api.duelyst2.com/api/users/";
-const matchHistoryEnd = "/games?len=3000&blatmmr=true";
-const tokenNangert =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5KVzE5QTFqdk95WGlWbi1XeTciLCJlbWFpbCI6ImFuZ2VydC5uaWtsYXNAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuYW5nZXJ0In0sInYiOjAsImlhdCI6MTY4MzE0MjA5MywiZXhwIjoxNjg0MzUxNjkzfQ.E2K51QWkca-4S8qQ_v1-ydtL2HdzdF9AXxOQ2oY70BY";
-const tokenRanks =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODQ3NzAwOTksImV4cCI6MTY4NTk3OTY5OX0.N9toiDakTN7uXfmu9HmQs18BeqsoDZrvcUW4nUYUfpM";
-const token = tokenRanks;
+const MatchHistory = () => {
+    const { username, history, setHistory, loading } = useContext(PlayerHistoryContext);
 
-const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
     //#region  useState
     const [loadingHistory, setLoadingHistory] = useState(true);
     const [query, setQuery] = useState("");
-    const [matches, setMatches] = useState([] as Match[]);
     const [currPlayer, setCurrPlayer] = useState<Player | undefined>(undefined);
 
     const [filtersOpen, { toggle }] = useDisclosure(false);
+    const [playerStats, setPlayerStats] = useState(false);
 
     const [onlyWins, setOnlyWins] = useState(false);
     const [onlyLosses, setOnlyLosses] = useState(false);
@@ -58,7 +50,7 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
     //#region Filter
 
-    const fuse = new Fuse(matches, fuseOptions);
+    const fuse = new Fuse(history, fuseOptions);
 
     const posts = fuse.search(query).map(result => result.item);
 
@@ -103,6 +95,10 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
         return filtered;
     };
 
+    useEffect(() => {
+        setFiltered(filterMatches(history));
+    }, [onlyWins, onlyLosses, youFactions, oppFactions, gameModes, query, loadingHistory === false]);
+
     //#endregion
 
     const fetchplayer = async (username: string) => {
@@ -111,57 +107,22 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
 
     useEffect(() => {
         const fetchAndSetPlayer = async () => {
-            const playerDB = await fetchplayer(player);
+            const playerDB = await fetchplayer(username);
             if (playerDB.data) {
                 setCurrPlayer(playerDB.data[0]);
             }
         };
         fetchAndSetPlayer();
-    }, [player]);
-
-    useEffect(() => {
-        setFiltered(filterMatches(matches));
-    }, [onlyWins, onlyLosses, youFactions, oppFactions, gameModes, query, loadingHistory === false]);
-
-    useEffect(() => {
-        const fetchItems = async () => {
-            const url = matchHistoryStart + currPlayer?.user_id.trim() + matchHistoryEnd;
-            try {
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                setMatches(data);
-                setFiltered(data);
-                setLoadingHistory(false);
-            } catch (error) {
-                console.error("Error fetching items:", error);
-                setLoadingHistory(false);
-            }
-        };
-
-        if (currPlayer !== null && currPlayer !== undefined) {
-            fetchItems();
-        }
-    }, [tokenRanks, matchHistoryStart, matchHistoryEnd, currPlayer]);
-
-    if (loadingHistory) {
-        return <p>Loading data...</p>;
-    }
+    }, [username]);
 
     return (
         <div>
-            <Button
-                className="bg-mantine-button dark:bg-mantine-button-dark dark:hover:bg-mantine-button-dark-hover text-mantine-button-text hover:bg-mantine-button-hover dark:text-mantine-button-text-dark"
-                onClick={toggle}
-                id="FilterButton"
-            >
-                Show filters
-            </Button>
+            <div id="header">
+                <CustomButton onClick={toggle} id="FilterButton">
+                    Show filters
+                </CustomButton>
+            </div>
+
             <Collapse in={filtersOpen}>
                 <Grid>
                     <Grid.Col>
@@ -204,12 +165,7 @@ const MatchHistory: React.FC<MatchHistoryProps> = ({ player }) => {
             <br />
 
             <ul id="list">
-                {filtered &&
-                    filtered.map((match: Match, key: number) => (
-                        <>
-                            <MatchHistoryItem matchId={key} match={match} player={player} />
-                        </>
-                    ))}
+                {filtered && filtered.map((match: Match, key: number) => <MatchHistoryItem key={key} matchId={key} match={match} player={username} />)}
             </ul>
         </div>
     );
