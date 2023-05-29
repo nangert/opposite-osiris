@@ -3,12 +3,15 @@ import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import HistorySearch from "@components/HistorySearch/HistorySearch";
+import LinkButton from "@components/LinkButton.astro";
 ---
 
 <Layout>
     <Header />
     <main id="main-content">
         <section id="hero">
+            <div id="infoBox"><LinkButton href="duelystranks.com">duelystranks.com</LinkButton></div>
+
             <h1>Player page</h1>
 
             <HistorySearch client:load />

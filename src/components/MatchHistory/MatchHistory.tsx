@@ -102,7 +102,7 @@ const MatchHistory = () => {
     //#endregion
 
     const fetchplayer = async (username: string) => {
-        return await supabase.from("players").select("username, user_id").eq("username", username);
+        return await supabase.from("Users").select("username, user_id").eq("username", username);
     };
 
     useEffect(() => {
