@@ -24,6 +24,6 @@ jobs:
             - name: Upload to Deno Deploy
               uses: denoland/deployctl@v1
               with:
-                  project: duelystranks-dev # TODO: replace with Deno Deploy project name
+                  project: duelystranks # TODO: replace with Deno Deploy project name
                   entrypoint: server/entry.mjs
                   root: dist
