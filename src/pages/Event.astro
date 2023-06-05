@@ -1,24 +1,19 @@
 ---
+import { SITE } from "@config";
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import HistorySearch from "@components/HistorySearch/HistorySearch";
 import LinkButton from "@components/LinkButton.astro";
-import EventsRoot from "@components/Events/EventsRoot";
+import EventCreator from "@components/Events/EventCreator";
 ---
 
-<Layout>
+<Layout title={`Event creator | ${SITE.title}`}>
     <Header />
+
     <main id="main-content">
         <section id="hero">
-            <h1>Player page</h1>
-
-            <HistorySearch client:load />
-
-            <div id="infoBox">Now includes a profile page with some graphs and winrate stats.</div>
-
-            <div id="infoBox">
-                <EventsRoot client:load />
+            <div class="not-found-wrapper">
+                <EventCreator client:load />
             </div>
         </section>
     </main>
@@ -48,10 +43,6 @@ import EventsRoot from "@components/Events/EventsRoot";
     }
     .social-links {
         @apply mr-2 mb-1 whitespace-nowrap sm:mb-0;
-    }
-
-    #infoBox {
-        @apply mt-4 flex;
     }
 
     /* ===== Featured & Recent Posts Sections ===== */

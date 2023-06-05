@@ -1,0 +1,22 @@
+.form {
+    width: 100%;
+}
+
+.formItem {
+    margin-top: 2em;
+}
+
+.dateTime {
+    display: inline-flex;
+    width: 100%;
+    gap: 2em;
+}
+
+.time {
+    width: 100%;
+}
+
+.Header {
+    font-size: xx-large;
+    font-weight: bold;
+}

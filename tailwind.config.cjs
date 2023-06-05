@@ -25,6 +25,8 @@ module.exports = {
       backgroundColor: {
         'mantine-button-hover': withOpacity('--color-accent'),
         'mantine-button-hover-dark': withOpacity('--color-accent-dark'),
+        'card-background': withOpacity('--color-card'),
+        'card-background-dark': withOpacity('--color-card-dark'),
       },
       textColor: {
         'mantine-button-text': withOpacity('--color-text-button'),
