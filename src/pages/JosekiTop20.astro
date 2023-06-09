@@ -1,9 +1,8 @@
 ---
-import Layout from "@layouts/Layout.astro";
-import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import LinkButton from "@components/LinkButton.astro";
+import Header from "@components/Header.astro";
 import JosekiTop50 from "@components/LeaderboardItem/JosekiTop50";
+import Layout from "@layouts/Layout.astro";
 
 interface PlayerData {
     username: string;
@@ -12,7 +11,7 @@ interface PlayerData {
 }
 
 const token =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODU3NzkzOTIsImV4cCI6MTY4Njk4ODk5Mn0._YyY5s0FbjSFZbfufU8RcEO53snG_6ZibZeUAMZFZjM";
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyJ9LCJ2IjowLCJpYXQiOjE2ODYxNzY1MDYsImV4cCI6MTY4NzM4NjEwNn0.vyQ86iUCvC4PotiLM-eMoKGV4YiQY4QxoM1mp0eI0Sc";
 
 const fetchItems = async () => {
     try {

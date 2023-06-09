@@ -23,10 +23,20 @@ type Event = {
 
 const EventsRoot = () => {
     const [events, setEvents] = useState<Event[]>([]);
+    const [articles, setArticles] = useState<Event[]>([]);
 
     const fetchEvents = async () => {
-        const { data, error } = await supabase.from("Event").select("title, body, footer, link, date, time, fileLink");
-        data ? setEvents(data) : setEvents([]);
+        const { data: dataEvents, error: errorEvents } = await supabase
+            .from("Event")
+            .select("title, body, footer, link, date, time, fileLink")
+            .eq("type", "Event");
+        dataEvents ? setEvents(dataEvents) : setEvents([]);
+
+        const { data: dataArticles, error: errorArticles } = await supabase
+            .from("Event")
+            .select("title, body, footer, link, date, time, fileLink")
+            .eq("type", "Article");
+        dataArticles ? setArticles(dataArticles) : setArticles([]);
     };
 
     useEffect(() => {
@@ -34,13 +44,44 @@ const EventsRoot = () => {
     }, []);
 
     return (
-        <div className="EventRoot">
-            <div className="Header">Events:</div>
-            <ul>
-                {events.map(item => (
-                    <Event title={item.title} date={item.date} time={item.time} body={item.body} footer={item.footer} link={item.link} />
-                ))}
-            </ul>
+        <div>
+            {events.length > 0 && (
+                <div>
+                    <div className="Header">Events:</div>
+                    <ul>
+                        {events.map(item => (
+                            <Event
+                                title={item.title}
+                                date={item.date}
+                                time={item.time}
+                                body={item.body}
+                                footer={item.footer}
+                                link={item.link}
+                                fileLink={item.fileLink}
+                            />
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {articles.length > 0 && (
+                <div>
+                    <div className="Header">Articles:</div>
+                    <ul>
+                        {articles.map(item => (
+                            <Event
+                                title={item.title}
+                                date={item.date}
+                                time={item.time}
+                                body={item.body}
+                                footer={item.footer}
+                                link={item.link}
+                                fileLink={item.fileLink}
+                            />
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };
