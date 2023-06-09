@@ -25,6 +25,7 @@ const PlayerRoot = () => {
     const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory } = useContext(PlayerHistoryContext);
 
     const [error401, setError401] = useState(false);
+    const [errorUserNotFount, setErrorUserNotFount] = useState(false);
 
     const [currPlayer, setCurrPlayer] = useState<Player | undefined>(undefined);
     const supabase = createClient(dbUrl, anonKey);
@@ -39,8 +40,11 @@ const PlayerRoot = () => {
     useEffect(() => {
         const fetchAndSetPlayer = async () => {
             const playerDB = await fetchplayer(username);
-            if (playerDB.data) {
+            if (playerDB.data && playerDB.data?.length > 0) {
                 setCurrPlayer(playerDB.data[0]);
+            } else {
+                setErrorUserNotFount(true);
+                setLoading(false);
             }
         };
         fetchAndSetPlayer();
@@ -94,6 +98,19 @@ const PlayerRoot = () => {
                 </div>
                 <div className="textLabel">
                     Please add <b>duelystranks</b> in-game for the data to be available.
+                </div>
+            </div>
+        );
+    }
+
+    if (errorUserNotFount) {
+        return (
+            <div>
+                <div className="textLabel">
+                    The account <b>{username}</b> is not yet in the player database.
+                </div>
+                <div className="textLabel">
+                    Please message <b>Nangert#1024</b> on discord to get it added.
                 </div>
             </div>
         );

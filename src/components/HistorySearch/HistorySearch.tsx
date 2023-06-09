@@ -1,7 +1,7 @@
-import { useState } from "react";
-import CustomTextInput from "@components/CustomComponents/CustomTextInput";
-import { Button, Grid } from "@mantine/core";
 import CustomButton from "@components/CustomComponents/CustomButton";
+import CustomTextInput from "@components/CustomComponents/CustomTextInput";
+import { Grid } from "@mantine/core";
+import { useState } from "react";
 
 const HistorySearch = () => {
     const [playerName, setPlayerName] = useState("");

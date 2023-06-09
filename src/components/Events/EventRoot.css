@@ -1,0 +1,29 @@
+.EventRoot {
+    margin-top: 2em;
+}
+
+.Event {
+    margin-top: 2em;
+    @apply bg-card-background-dark dark:bg-card-background;
+    @apply text-mantine-button-text dark:text-mantine-button-text-dark;
+}
+
+.Header {
+    margin-top: 1em;
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.Title {
+    font-size: large;
+    font-weight: bold;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.Footer {
+    padding: 1em;
+    font-size: small;
+    font-weight: lighter;
+}
