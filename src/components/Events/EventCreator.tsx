@@ -7,7 +7,7 @@ import CustomTextInput from "@components/CustomComponents/CustomTextInput";
 import CustomTimeInput from "@components/CustomComponents/CustomTimeInput";
 
 //ChangeImport
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+//import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 //import { createClient } from "@supabase/supabase-js";
 
 const dbUrl = "https://gblhpiwrdmnzhdjidnwi.supabase.co";
