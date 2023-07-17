@@ -2,7 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import RankedTop50 from "@components/LeaderboardItem/RankedTop50";
+import Ranked from "@components/LeaderboardItem/RankedTop50";
 
 const response = await fetch("https://api.duelyst2.com/players/v1/ranked-top50/", {
     method: "GET",
@@ -17,7 +17,7 @@ const data = await response.json();
         <section id="hero">
             <h1>Ranked Top 50 BlatMMR</h1>
             <br />
-            <RankedTop50 client:load players={data.players} />
+            <Ranked client:load players={data.players} />
         </section>
     </main>
     <Footer />
