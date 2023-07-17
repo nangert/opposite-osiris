@@ -8,7 +8,7 @@ const supabase = createClient(dbUrl, anonKey);
 
 (async () => {
     try {
-        const response = await fetch("https://api.duelyst2.com/blatmmr/v1/mmr/ranked-top50", {
+        const response = await fetch("https://api.duelyst2.com/players/v1/ranked-top50/", {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
