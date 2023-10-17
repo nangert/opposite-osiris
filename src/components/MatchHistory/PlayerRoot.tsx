@@ -19,7 +19,7 @@ const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=9999&blatmmr=true";
 
 const token =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyIsInVpZCI6Ii1OVDRYVUpReHZ5aXE0bDBMdXYzIn0sInYiOjAsImlhdCI6MTY5NTIxMDk2MSwiZXhwIjoxNjk2NDIwNTYxfQ.ono8XcwXccbLhfEGkpiC84hfnDahWLeI649FSXbPLps";
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyIsInVpZCI6Ii1OVDRYVUpReHZ5aXE0bDBMdXYzIn0sInYiOjAsImlhdCI6MTY5NzUzMjUzOSwiZXhwIjoxNjk4NzQyMTM5fQ.um1nn4tHeOCv2YX6ADBLI3aOTVN9B5ryUSYVwsLzFBQ";
 
 const PlayerRoot = () => {
     const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory } = useContext(PlayerHistoryContext);
