@@ -3,7 +3,7 @@ name: Fetch and Save Data
 on:
     workflow_dispatch:
     schedule:
-        - cron: "0 0 * * *" # This will run the action every day at midnight UTC. You can adjust the cron schedule as needed.
+        - cron: "0 0 * * *" # This will run the action every day at midnight UTC.
 
 jobs:
     fetch_and_save_data:
@@ -18,7 +18,7 @@ jobs:
               with:
                   node-version: 16
 
-            - name: Install dependencies
+            - name: Install Node.js dependencies
               run: npm install
 
             - name: Run fetchAndSaveData script
@@ -26,3 +26,19 @@ jobs:
               env:
                   DB_URL: ${{ secrets.DB_URL }}
                   ANON_KEY: ${{ secrets.ANON_KEY }}
+
+            - name: Set up Python
+              uses: actions/setup-python@v2
+              with:
+                  python-version: '3.x' # Specify the Python version you need
+
+            - name: Install Python dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  # Add any other dependency installations here, if needed
+
+            - name: Run fetchToken.py script
+              run: python fetchToken.py
+              # Include environment variables if your Python script needs them
+              # env:
+              #     SOME_ENV_VAR: ${{ secrets.SOME_SECRET }}
