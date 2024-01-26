@@ -17,7 +17,7 @@ const loginInfo = {
     password: Deno.env.get("DUELYST_PW"),
 };
 
-(async () => {
+async function getNewToken() {
     console.log("fetching new token");
     try {
         const response = await fetch(sessionLink, {
@@ -37,7 +37,9 @@ const loginInfo = {
     } catch (error) {
         console.error("Error in POST request:", error.message);
     }
-})();
+}
+
+await getNewToken();
 
 const token = Deno.env.get("DUELYST_API");
 ---
