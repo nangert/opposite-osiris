@@ -8,8 +8,6 @@ const { username } = Astro.params;
 const token = Deno.env.get("DUELYST_API");
 const anonKey = Deno.env.get("ANON_KEY");
 const dbUrl = Deno.env.get("DB_URL");
-
-console.log(token);
 ---
 
 <Layout>

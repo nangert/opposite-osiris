@@ -18,6 +18,8 @@ const PlayerRoot = () => {
     const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory, token, anonKey, dbUrl } =
         useContext(PlayerHistoryContext);
 
+    console.log(token);
+
     const [error401, setError401] = useState(false);
     const [errorUserNotFount, setErrorUserNotFount] = useState(false);
 
