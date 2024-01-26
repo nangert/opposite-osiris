@@ -5,6 +5,8 @@ import { useState } from "react";
 
 const HistorySearch = () => {
     const [playerName, setPlayerName] = useState("");
+    const user = Deno.env.get("DUELYST_USER");
+    console.log(user);
 
     const handleClick = () => {
         if (playerName.trim()) {
@@ -18,7 +20,6 @@ const HistorySearch = () => {
 
     return (
         <>
-            <h1>{Deno.env.get("DUELYST_USER")}</h1>
             <h1>Dev branch</h1>
             <h2>Player name:</h2>
             <Grid style={{ display: "flex", alignContent: "flex-end" }}>
