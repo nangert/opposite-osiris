@@ -5,9 +5,36 @@ import MatchHistoryRoot from "@components/MatchHistory/PlayerRootContext";
 import Layout from "@layouts/Layout.astro";
 
 const { username } = Astro.params;
-const token = Deno.env.get("DUELYST_API");
+
 const anonKey = Deno.env.get("ANON_KEY");
 const dbUrl = Deno.env.get("DB_URL");
+
+const sessionLink = "https://api.duelyst2.com/session";
+const loginInfo = {
+    username: Deno.env.get("DUELYST_USER"),
+    password: Deno.env.get("DUELYST_PW"),
+};
+
+try {
+    const response = await fetch(sessionLink, {
+        method: "POST",
+        body: loginInfo,
+        headers: { "Content-Type": "application/json" },
+    });
+
+    if (response.status === 200) {
+        console.log("Success!");
+        const newToken = response.json();
+        console.log(newToken);
+        //Deno.env.set("DUELYST_API", newToken)
+    } else {
+        console.log("Failed to send POST request. Status code:", response.status);
+    }
+} catch (error) {
+    console.error("Error in POST request:", error.message);
+}
+
+const token = Deno.env.get("DUELYST_API");
 ---
 
 <Layout>

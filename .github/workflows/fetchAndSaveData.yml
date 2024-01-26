@@ -26,9 +26,3 @@ jobs:
               env:
                   DB_URL: ${{ secrets.DB_URL }}
                   ANON_KEY: ${{ secrets.ANON_KEY }}
-
-            - name: Run fetchToken.js script
-              run: node fetchToken.js
-              env:
-                  DUELYST_LOGIN: ${{ secrets.DUELYST_LOGIN }}
-                  DUELYST_PASSWORD: ${{ secrets.DUELYST_PASSWORD }}
