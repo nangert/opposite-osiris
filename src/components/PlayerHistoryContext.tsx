@@ -10,6 +10,7 @@ type ContextProps = {
     setLoading: Dispatch<SetStateAction<boolean>>;
     showHistory: boolean;
     setShowHistory: Dispatch<SetStateAction<boolean>>;
+    token: string;
 };
 
 export const PlayerHistoryContext = createContext<ContextProps>({
@@ -21,4 +22,5 @@ export const PlayerHistoryContext = createContext<ContextProps>({
     setLoading: () => {},
     showHistory: true,
     setShowHistory: () => {},
+    token: "",
 });

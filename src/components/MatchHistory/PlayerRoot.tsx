@@ -18,11 +18,8 @@ const anonKey =
 const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=9999&blatmmr=true";
 
-const token =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImlkIjoiLU5UNFhVSlF4dnlpcTRsMEx1djMiLCJlbWFpbCI6ImR1ZWx5c3RyYW5rc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImR1ZWx5c3RyYW5rcyIsInVpZCI6Ii1OVDRYVUpReHZ5aXE0bDBMdXYzIn0sInYiOjAsImlhdCI6MTcwNTQ5NTMyOSwiZXhwIjoxNzA2NzA0OTI5fQ.64Q7w0TMyf-cgrGDWtMJzMIdM9_7mHCszoIAucGzVrY";
-
 const PlayerRoot = () => {
-    const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory } = useContext(PlayerHistoryContext);
+    const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory, token } = useContext(PlayerHistoryContext);
 
     const [error401, setError401] = useState(false);
     const [errorUserNotFount, setErrorUserNotFount] = useState(false);

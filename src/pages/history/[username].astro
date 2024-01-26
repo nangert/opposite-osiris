@@ -5,13 +5,14 @@ import MatchHistoryRoot from "@components/MatchHistory/PlayerRootContext";
 import Layout from "@layouts/Layout.astro";
 
 const { username } = Astro.params;
+const token = Deno.env.get("DUELYST_API");
 ---
 
 <Layout>
     <Header activeNav="history" />
     <main id="main-content">
         <section id="hero">
-            <MatchHistoryRoot client:load username={username ?? ""} />
+            <MatchHistoryRoot client:load username={username ?? ""} token={token ?? ""} />
         </section>
         <Footer />
     </main>
