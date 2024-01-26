@@ -7,6 +7,8 @@ const HistorySearch = () => {
     const [playerName, setPlayerName] = useState("");
     const user = Deno.env.get("DUELYST_USER");
     console.log(user);
+    const token = Deno.env.get("DUELYST_API");
+    console.log(token);
 
     const handleClick = () => {
         if (playerName.trim()) {
