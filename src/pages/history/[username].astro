@@ -4,6 +4,8 @@ import Header from "@components/Header.astro";
 import MatchHistoryRoot from "@components/MatchHistory/PlayerRootContext";
 import Layout from "@layouts/Layout.astro";
 
+const fetch = require("node-fetch");
+
 const { username } = Astro.params;
 
 const anonKey = Deno.env.get("ANON_KEY");
@@ -15,7 +17,7 @@ const loginInfo = {
     password: Deno.env.get("DUELYST_PW"),
 };
 
-async function getNewToken() {
+(async () => {
     console.log("fetching new token");
     try {
         const response = await fetch(sessionLink, {
@@ -35,9 +37,7 @@ async function getNewToken() {
     } catch (error) {
         console.error("Error in POST request:", error.message);
     }
-}
-
-getNewToken();
+})();
 
 const token = Deno.env.get("DUELYST_API");
 ---
