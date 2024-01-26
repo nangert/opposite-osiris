@@ -18,6 +18,7 @@ const HistorySearch = () => {
 
     return (
         <>
+            <h1>Dev branch</h1>
             <h2>Player name:</h2>
             <Grid style={{ display: "flex", alignContent: "flex-end" }}>
                 <Grid.Col span={10}>
