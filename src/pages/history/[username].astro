@@ -15,24 +15,29 @@ const loginInfo = {
     password: Deno.env.get("DUELYST_PW"),
 };
 
-try {
-    const response = await fetch(sessionLink, {
-        method: "POST",
-        body: loginInfo,
-        headers: { "Content-Type": "application/json" },
-    });
+async function getNewToken() {
+    console.log("fetching new token");
+    try {
+        const response = await fetch(sessionLink, {
+            method: "POST",
+            body: loginInfo,
+            headers: { "Content-Type": "application/json" },
+        });
 
-    if (response.status === 200) {
-        console.log("Success!");
-        const newToken = response.json();
-        console.log(newToken);
-        //Deno.env.set("DUELYST_API", newToken)
-    } else {
-        console.log("Failed to send POST request. Status code:", response.status);
+        if (response.status === 200) {
+            console.log("Success!");
+            const newToken = response.json();
+            console.log(newToken);
+            //Deno.env.set("DUELYST_API", newToken)
+        } else {
+            console.log("Failed to send POST request. Status code:", response.status);
+        }
+    } catch (error) {
+        console.error("Error in POST request:", error.message);
     }
-} catch (error) {
-    console.error("Error in POST request:", error.message);
 }
+
+getNewToken();
 
 const token = Deno.env.get("DUELYST_API");
 ---
