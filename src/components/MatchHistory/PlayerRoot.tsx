@@ -11,15 +11,12 @@ import CustomButton from "@components/CustomComponents/CustomButton";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 //import { createClient } from "@supabase/supabase-js";
 
-const dbUrl = "https://gblhpiwrdmnzhdjidnwi.supabase.co";
-const anonKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdibGhwaXdyZG1uemhkamlkbndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODEyNDY5NzIsImV4cCI6MTk5NjgyMjk3Mn0.xCWTsPeKXrVA-yw6KNcJL33Nf4MzbrS6gL0MGQmNG0M";
-
 const matchHistoryStart = "https://api.duelyst2.com/api/users/";
 const matchHistoryEnd = "/games?len=9999&blatmmr=true";
 
 const PlayerRoot = () => {
-    const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory, token } = useContext(PlayerHistoryContext);
+    const { username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory, token, anonKey, dbUrl } =
+        useContext(PlayerHistoryContext);
 
     const [error401, setError401] = useState(false);
     const [errorUserNotFount, setErrorUserNotFount] = useState(false);

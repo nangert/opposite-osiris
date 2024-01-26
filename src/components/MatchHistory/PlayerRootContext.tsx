@@ -6,6 +6,8 @@ import PlayerRoot from "./PlayerRoot";
 type MatchHistoryRootProps = {
     username: string;
     token: string;
+    anonKey: string;
+    dbUrl: string;
 };
 
 const PlayerRootContext = (props: MatchHistoryRootProps) => {
@@ -14,11 +16,14 @@ const PlayerRootContext = (props: MatchHistoryRootProps) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [showHistory, setShowHistory] = useState<boolean>(true);
     const token = props.token;
-    console.log(token);
+    const anonKey = props.anonKey;
+    const dbUrl = props.dbUrl;
 
     return (
         <>
-            <PlayerHistoryContext.Provider value={{ username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory, token }}>
+            <PlayerHistoryContext.Provider
+                value={{ username, setUsername, history, setHistory, loading, setLoading, showHistory, setShowHistory, token, anonKey, dbUrl }}
+            >
                 <PlayerRoot />
             </PlayerHistoryContext.Provider>
         </>

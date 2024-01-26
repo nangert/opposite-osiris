@@ -11,6 +11,8 @@ type ContextProps = {
     showHistory: boolean;
     setShowHistory: Dispatch<SetStateAction<boolean>>;
     token: string;
+    anonKey: string;
+    dbUrl: string;
 };
 
 export const PlayerHistoryContext = createContext<ContextProps>({
@@ -23,4 +25,6 @@ export const PlayerHistoryContext = createContext<ContextProps>({
     showHistory: true,
     setShowHistory: () => {},
     token: "",
+    anonKey: "",
+    dbUrl: "",
 });

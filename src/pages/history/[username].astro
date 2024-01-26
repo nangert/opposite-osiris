@@ -6,13 +6,17 @@ import Layout from "@layouts/Layout.astro";
 
 const { username } = Astro.params;
 const token = Deno.env.get("DUELYST_API");
+const anonKey = Deno.env.get("ANON_KEY");
+const dbUrl = Deno.env.get("DB_URL");
+
+console.log(token);
 ---
 
 <Layout>
     <Header activeNav="history" />
     <main id="main-content">
         <section id="hero">
-            <MatchHistoryRoot client:load username={username ?? ""} token={token ?? ""} />
+            <MatchHistoryRoot client:load username={username ?? ""} token={token ?? ""} anonKey={anonKey ?? ""} dbUrl={dbUrl ?? ""} />
         </section>
         <Footer />
     </main>

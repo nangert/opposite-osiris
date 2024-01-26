@@ -3,8 +3,8 @@ const fetch = require("node-fetch");
 async function getSessionToken() {
     const sessionLink = "https://api.duelyst2.com/session";
     const loginInfo = {
-        username: process.env.DUELYST_LOGIN,
-        password: process.env.DUELYST_PASSWORD
+        username: Deno.env.get("DUELYST_USER"),
+        password: Deno.env.get("DUELYST_PW"),
     };
 
     try {
@@ -17,7 +17,7 @@ async function getSessionToken() {
         if (response.status === 200) {
             console.log('Success!');
             const newToken = response.data.token;
-            console.log('New token:', newToken);
+            Deno.env.set("DUELYST_API", newToken)
         } else {
             console.log('Failed to send POST request. Status code:', response.status);
         }
